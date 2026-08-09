@@ -9,6 +9,14 @@
     />
     <title>KeebWeaver · Split keyboard studio</title>
     <link rel="stylesheet" href="styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./node_modules/three/build/three.module.js",
+          "three/addons/": "./node_modules/three/examples/jsm/"
+        }
+      }
+    </script>
   </head>
   <body>
     <main class="app-shell">
@@ -203,6 +211,6 @@
       </section>
     </main>
 
-    <script type="module" src="src/app.js"></script>
+    <script type="module" src="./src/app.js"></script>
   </body>
 </html>
