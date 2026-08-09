@@ -37,4 +37,8 @@ and live qualification require an explicit device owner decision.
 - Keep generated UF2 files and local build work out of commits.
 - Preserve third-party copyright and SPDX notices.
 
+Git publishes commit author metadata. Contributors who do not want to expose a
+personal address should configure their GitHub-provided noreply email before
+committing; KeebWeaver does not require a specific public-email provider.
+
 Contributions are accepted under the repository's MIT License.

@@ -1,0 +1,7 @@
+# Sensitive build, release, and hardware boundaries require maintainer review.
+/.github/workflows/ @Cyberlane
+/firmware/ @Cyberlane
+/scripts/check-public-boundary.mjs @Cyberlane
+/scripts/check-release-version.mjs @Cyberlane
+/scripts/verify-uf2.mjs @Cyberlane
+/SECURITY.md @Cyberlane

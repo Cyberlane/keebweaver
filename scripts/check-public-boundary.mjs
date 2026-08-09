@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { extname } from "node:path";
 
@@ -39,21 +39,25 @@ for (const path of historyPaths) {
 }
 
 const commits = lines(output(["rev-list", "--all"]));
-for (const commit of commits) {
-  const paths = lines(output(["ls-tree", "-r", "--name-only", commit]));
-  for (const path of paths) {
-    if (!textExtensions.has(extname(path).toLowerCase()) && !["AGENTS.md", "LICENSE"].includes(path)) continue;
-    const text = output(["show", `${commit}:${path}`]);
-    for (const { pattern, label } of privateTextPatterns) {
-      if (pattern.test(text)) failures.push(`${label} in Git history at ${commit}:${path}`);
-    }
-  }
-}
+const historyGrepPatterns = [
+  "/Users/[[:alnum:]_.-]+/",
+  "[A-Za-z]:\\\\Users\\\\[^\\\\]+\\\\",
+  ["file:", "//"].join(""),
+  ["obsi", "dian"].join(""),
+];
 
-const emails = new Set(lines(output(["log", "--all", "--format=%ae%n%ce"])));
-for (const email of emails) {
-  if (!email.endsWith("@users.noreply.github.com")) {
-    failures.push(`Git history contains a non-noreply author or committer email: ${email}`);
+for (let index = 0; index < commits.length; index += 100) {
+  const commitBatch = commits.slice(index, index + 100);
+  const grep = spawnSync("git", [
+    "grep", "-I", "-i", "-l",
+    ...historyGrepPatterns.flatMap((pattern) => ["-e", pattern]),
+    ...commitBatch,
+    "--",
+  ], { encoding: "utf8" });
+  if (grep.status === 0) {
+    for (const match of lines(grep.stdout.trim())) failures.push(`private text appears in Git history at ${match}`);
+  } else if (grep.status !== 1) {
+    throw new Error(grep.stderr.trim() || `git grep failed with status ${grep.status}`);
   }
 }
 

@@ -106,6 +106,7 @@ artifact provenance attestation. Verify a downloaded release with:
 sha256sum -c SHA256SUMS
 gh attestation verify keebweaver-ergokeeb-corne-left.uf2 \
   --repo Cyberlane/keebweaver
+gh release verify v0.1.0 --repo Cyberlane/keebweaver
 ```
 
 ## Display artwork
@@ -130,8 +131,8 @@ npm run build:firmware
 
 `npm run check` runs unit tests, the production build, release-metadata checks,
 and the public-boundary audit. The audit rejects tracked device images,
-firmware captures, local home paths, private artifact directories, and
-non-noreply Git history identities.
+firmware captures, local home paths, private artifact directories, and private
+content retained anywhere in reachable Git history.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and
 [SUPPORT.md](SUPPORT.md). By participating, contributors agree to the
