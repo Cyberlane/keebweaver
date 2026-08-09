@@ -106,7 +106,7 @@ artifact provenance attestation. Verify a downloaded release with:
 sha256sum -c SHA256SUMS
 gh attestation verify keebweaver-ergokeeb-corne-left.uf2 \
   --repo Cyberlane/keebweaver
-gh release verify v0.1.0 --repo Cyberlane/keebweaver
+gh release verify v0.1.1 --repo Cyberlane/keebweaver
 ```
 
 ## Display artwork
