@@ -1,0 +1,23 @@
+/*
+ * Reserve independent flash for display art and expose a second USB serial
+ * endpoint. It is intentionally separate from ZMK Studio and settings/NVS.
+ */
+
+&code_partition {
+    reg = <0x00026000 0x000b6000>;
+};
+
+&flash0 {
+    partitions {
+        keebweaver_display_art: partition@dc000 {
+            label = "keebweaver-display-art";
+            reg = <0x000dc000 0x00010000>;
+        };
+    };
+};
+
+&zephyr_udc0 {
+    keebweaver_display_usb: keebweaver_display_usb {
+        compatible = "zephyr,cdc-acm-uart";
+    };
+};

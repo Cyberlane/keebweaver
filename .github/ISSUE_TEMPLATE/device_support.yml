@@ -1,0 +1,40 @@
+name: Device support proposal
+description: Propose a new verified hardware catalog entry
+title: "device: "
+labels: [device-support]
+body:
+  - type: input
+    id: device
+    attributes:
+      label: Exact device and revision
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Public technical and license sources
+      description: Link exact board definitions, schematics, and license notices.
+    validations:
+      required: true
+  - type: textarea
+    id: targets
+    attributes:
+      label: Side-specific build targets and hardware
+      description: Include MCU, bootloader, matrix, displays, split roles, and optional controls.
+    validations:
+      required: true
+  - type: textarea
+    id: recovery
+    attributes:
+      label: Safe identification, stop, and recovery plan
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Publication confirmation
+      options:
+        - label: All linked evidence is public and licensed for the proposed use.
+          required: true
+        - label: No recovered firmware or private device capture is attached.
+          required: true

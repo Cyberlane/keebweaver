@@ -1,0 +1,25 @@
+menuconfig KEEBWEAVER_DISPLAY_ART
+    bool "KeebWeaver USB display artwork"
+    default y if SHIELD_NICE_VIEW
+    depends on ZMK_DISPLAY
+    select FLASH_MAP
+    select SERIAL
+    select UART_LINE_CTRL
+    select USB_DEVICE_STACK
+    select USB_CDC_ACM
+    select LV_FONT_MONTSERRAT_14
+    select LV_USE_IMG
+    select LV_USE_LABEL
+    help
+      Store one validated 160x68 one-bit artwork image per keyboard half in
+      a dedicated flash partition. The image is updated through a separate
+      USB CDC endpoint and never occupies ZMK settings or Bluetooth storage.
+
+if KEEBWEAVER_DISPLAY_ART
+
+config KEEBWEAVER_DISPLAY_ART_USB_STACK_SIZE
+    int "USB artwork receiver stack size"
+    default 1024
+    range 768 2048
+
+endif

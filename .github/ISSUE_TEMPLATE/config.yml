@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Usage questions
+    url: https://github.com/Cyberlane/keebweaver/discussions
+    about: Ask for setup and supported-device help in Discussions.
+  - name: Security report
+    url: https://github.com/Cyberlane/keebweaver/security/advisories/new
+    about: Report security issues privately.

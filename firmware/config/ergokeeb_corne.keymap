@@ -1,0 +1,93 @@
+/*
+ * Copyright (c) 2026 KeebWeaver contributors
+ * SPDX-License-Identifier: MIT
+ *
+ * Reference macOS beginner configuration for the ErgoKeeb Eyelash Corne.
+ * Board, display, power, RGB, and split definitions remain in the upstream
+ * CorneZMK source at 5d79d8b1cef4168d46d4ff975a65523928ea2ba1. This file
+ * is maintained by KeebWeaver and preserves the five-way matrix mouse/click
+ * cluster on every layer.
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/mouse.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <input/processors.dtsi>
+
+#define ZMK_MOUSE_DEFAULT_MOVE_VAL 1200
+#define ZMK_MOUSE_DEFAULT_SCRL_VAL 20
+
+/ {
+    behaviors {
+        td0: td0 {
+            compatible = "zmk,behavior-tap-dance";
+            display-name = "Shift/Caps Lock Tap Dance";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_SHIFT>, <&kp CAPS>;
+        };
+    };
+
+    rgb_encoder: rgb_encoder {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&rgb_ug RGB_BRI>, <&rgb_ug RGB_BRD>;
+    };
+
+    scroll_encoder: scroll_encoder {
+        compatible = "zmk,behavior-sensor-rotate";
+        #sensor-binding-cells = <0>;
+        bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+        tap-ms = <30>;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        base_layer {
+            display-name = "Base";
+            bindings = <
+&kp TAB    &kp Q  &kp W      &kp E     &kp R  &kp T                         &mmv MOVE_UP                     &kp Y        &kp U  &kp I      &kp O    &kp P     &kp BSPC
+&td0       &kp A  &kp S      &kp D     &kp F  &kp G               &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &kp H        &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
+&kp LCTRL  &kp Z  &kp X      &kp C     &kp V  &kp B      &kp SPACE              &mmv MOVE_DOWN                   &kp N        &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp ESC
+                             &kp LGUI  &mo 2  &lt 3 SPACE                                      &lt 1 ENTER  &none  &kp RALT
+            >;
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOLUME_DOWN>;
+        };
+
+        navigation_layer {
+            display-name = "Navigation";
+            bindings = <
+&trans       &kp LA(LEFT)  &kp LA(RIGHT)  &kp HOME  &kp END  &kp PG_UP               &mmv MOVE_UP                     &trans  &trans  &trans  &trans  &trans  &trans
+&trans       &kp LEFT      &kp DOWN       &kp UP    &kp RIGHT  &kp PG_DN    &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &trans  &trans  &trans  &trans  &trans  &trans
+&trans       &kp LG(Z)     &kp LG(X)      &kp LG(C)  &kp LG(V)  &kp LG(LS(Z))  &trans      &mmv MOVE_DOWN                   &trans  &trans  &trans  &trans  &trans  &trans
+                                             &trans    &trans    &trans                                            &trans  &trans  &trans
+            >;
+            sensor-bindings = <&scroll_encoder>;
+        };
+
+        numbers_layer {
+            display-name = "Numbers";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans                         &mmv MOVE_UP                     &kp N7  &kp N8  &kp N9  &kp FSLH  &kp BSPC  &kp DEL
+&trans  &trans  &trans  &trans  &trans  &trans               &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &kp N4  &kp N5  &kp N6  &kp ASTRK  &kp HOME  &kp PG_UP
+&trans  &trans  &trans  &trans  &trans  &trans  &trans              &mmv MOVE_DOWN                   &kp N1  &kp N2  &kp N3  &kp MINUS  &kp END   &kp PG_DN
+                                     &trans  &trans  &trans                                     &kp N0  &kp DOT  &kp PLUS
+            >;
+            sensor-bindings = <&scroll_encoder>;
+        };
+
+        symbols_layer {
+            display-name = "Symbols";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans                         &mmv MOVE_UP                     &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT  &kp BSPC
+&trans  &trans  &trans  &trans  &trans  &trans               &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &kp LPAR  &kp RPAR  &kp LBKT  &kp RBKT  &kp LBRC  &kp RBRC
+&trans  &trans  &trans  &trans  &trans  &trans  &trans              &mmv MOVE_DOWN                   &kp MINUS  &kp EQUAL  &kp UNDER  &kp PLUS  &kp BSLH  &kp PIPE
+                                     &trans  &trans  &trans                                     &kp RET  &kp SQT  &kp LS(SQT)
+            >;
+            sensor-bindings = <&scroll_encoder>;
+        };
+    };
+};

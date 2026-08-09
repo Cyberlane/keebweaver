@@ -1,0 +1,10 @@
+node_modules/
+.firmware-work/
+firmware/artifacts/
+dist/
+evidence/
+uploads/
+*.uf2
+*.ekar
+*.kwar
+.DS_Store

@@ -1,0 +1,45 @@
+name: Bug report
+description: Report a reproducible KeebWeaver problem
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach recovery firmware, pairing records, credentials, or private device captures.
+  - type: input
+    id: version
+    attributes:
+      label: KeebWeaver version
+      placeholder: v0.1.0 or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Hardware target
+      placeholder: ergokeeb_corne_left/right, or browser-only
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Include expected behavior, actual behavior, and minimal reproduction steps.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Verification performed
+      placeholder: npm test, browser/version, checksum result, or build-manifest revisions
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I have not attached private captures or firmware.
+          required: true
+        - label: I identified whether this involved a physical device write.
+          required: true

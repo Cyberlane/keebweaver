@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="KeebWeaver is an open configurator, display-art studio, and reproducible firmware toolkit for supported split keyboards."
+    />
+    <title>KeebWeaver · Split keyboard studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">OPEN SPLIT KEYBOARD STUDIO</p>
+          <h1>Keeb<span>Weaver</span></h1>
+          <p class="device-line">Verified target · ErgoKeeb Eyelash Corne</p>
+        </div>
+        <div class="safety-badge" aria-label="Artwork upload status">
+          <span class="status-dot" aria-hidden="true"></span>
+          Artwork editor · upload requires art-enabled firmware
+        </div>
+      </header>
+
+      <section class="control-deck" aria-label="Layer controls and project status">
+        <div>
+          <p class="section-label">macOS Beginner profile · captured reference shown in inspector</p>
+          <div id="layer-tabs" class="layer-tabs" role="tablist" aria-label="Proposed layers"></div>
+        </div>
+        <div class="deck-actions">
+          <button id="validate-button" class="outline-button" type="button">Run validator</button>
+          <button id="serialization-button" class="outline-button" type="button">Show deterministic record</button>
+          <button id="import-project-button" class="outline-button" type="button">Import local project</button>
+          <button id="export-project-button" class="outline-button" type="button">Download project</button>
+          <button id="reset-draft-button" class="outline-button" type="button">Reset draft</button>
+          <button class="disabled-button" type="button" disabled title="Firmware generation is intentionally unavailable">
+            Generate firmware · unavailable
+          </button>
+        </div>
+      </section>
+
+      <input id="project-file-input" type="file" accept="application/json,.json" hidden />
+
+      <section class="workspace-grid">
+        <section class="keyboard-panel" aria-labelledby="keyboard-heading">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">48-position source-correlated layout</p>
+              <h2 id="keyboard-heading">Select a key to inspect the beginner proposal</h2>
+            </div>
+            <p id="layer-description" class="layer-description"></p>
+          </div>
+
+          <div class="scene-shell">
+            <div class="scene-toolbar" aria-label="3D view controls">
+              <span><i aria-hidden="true"></i> Live Three.js scene</span>
+              <button id="reset-view" class="scene-button" type="button">Reset view</button>
+            </div>
+            <div id="three-stage" class="three-stage"></div>
+            <div class="scene-readout" aria-live="polite">
+              <span class="scene-readout-label">Selected</span>
+              <strong id="scene-selected-id">r3c5</strong>
+              <span id="scene-selected-binding">Symbol / Space</span>
+            </div>
+            <p class="scene-gesture">Drag to orbit <span>·</span> Scroll to zoom <span>·</span> Click any key or the five zones of the red control</p>
+          </div>
+
+          <details class="accessibility-panel">
+            <summary>Open accessible 48-position control map</summary>
+            <div id="keyboard" class="accessibility-keyboard" role="group" aria-label="48 independently selectable matrix positions"></div>
+          </details>
+
+          <p class="keyboard-note">
+            The scene follows the photographed black/red low-profile enclosure, dual portrait nice!view modules on the inner
+            edges, and one physical red five-way control below the right display. It has no device transport or output path.
+          </p>
+        </section>
+
+        <aside class="inspector-panel" aria-labelledby="inspector-heading">
+          <div class="panel-heading compact">
+            <p class="section-label">Inspector</p>
+            <h2 id="inspector-heading">Selected position</h2>
+          </div>
+          <dl id="key-inspector" class="inspector-list"></dl>
+
+          <section class="draft-editor" aria-labelledby="draft-editor-heading">
+            <p class="section-label">Project intent · local draft</p>
+            <h2 id="draft-editor-heading">Propose a behavior label</h2>
+            <p class="draft-copy">This changes only the separate project record shown in the preview. It cannot generate, export, apply, or send a keymap.</p>
+            <form id="draft-editor-form">
+              <label for="draft-binding">Proposed behavior for <strong id="draft-target">r3c5</strong></label>
+              <input id="draft-binding" name="draft-binding" type="text" maxlength="80" autocomplete="off" />
+              <p class="draft-baseline">Captured baseline: <strong id="draft-baseline-binding"></strong></p>
+              <div class="draft-actions">
+                <button class="outline-button" type="submit">Save local draft</button>
+                <button id="revert-binding-button" class="text-button" type="button">Revert this key</button>
+              </div>
+              <p id="draft-editor-feedback" class="draft-feedback" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section class="validation-section" aria-labelledby="validation-heading">
+            <div class="validation-heading">
+              <p class="section-label">Validation report</p>
+              <span id="validation-status" class="validation-status">Checking</span>
+            </div>
+            <h2 id="validation-heading">Fail closed before any future export</h2>
+            <ul id="validation-list" class="validation-list"></ul>
+            <p id="validation-fingerprint" class="fingerprint"></p>
+          </section>
+
+          <section class="boundary-section" aria-labelledby="boundary-heading">
+            <p class="section-label">State boundary</p>
+            <h2 id="boundary-heading">Three records, never conflated</h2>
+            <ol>
+              <li><strong>Device definition</strong><span>immutable 48-position source model</span></li>
+              <li><strong>Runtime snapshot</strong><span>captured Studio/persistent baseline</span></li>
+              <li><strong>Project intent</strong><span>future editable local configuration</span></li>
+            </ol>
+          </section>
+        </aside>
+      </section>
+
+      <section id="display-studio" class="display-studio" aria-labelledby="display-studio-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="section-label">nice!view artwork studio</p>
+            <h2 id="display-studio-heading">Draw, preview, and save one image per half</h2>
+          </div>
+          <p class="display-studio-note">The editor matches the physical 68×160 portrait screen. It rotates that view into the exact 160×68 one-bit buffer stored on the selected half.</p>
+        </div>
+
+        <div class="display-studio-grid">
+          <section class="preset-panel" aria-labelledby="preset-heading">
+            <p class="section-label">Premade gallery</p>
+            <h3 id="preset-heading">Start with something useful</h3>
+            <div id="display-preset-grid" class="display-preset-grid"></div>
+          </section>
+
+          <section class="art-editor" aria-labelledby="art-editor-heading">
+            <div class="editor-heading">
+              <div>
+                <p class="section-label">Pixel editor</p>
+                <h3 id="art-editor-heading">Custom image</h3>
+              </div>
+              <div class="display-side-picker" role="group" aria-label="Select display side">
+                <button class="side-button" type="button" data-display-side="left" aria-pressed="true">Left display</button>
+                <button class="side-button" type="button" data-display-side="right" aria-pressed="false">Right display</button>
+              </div>
+            </div>
+
+            <div class="art-canvas-frame">
+              <canvas id="display-art-canvas" width="68" height="160" role="img" aria-label="Editable 68 by 160 portrait monochrome display artwork"></canvas>
+            </div>
+            <p class="art-resolution"><strong>68×160 portrait</strong> · 160×68 device buffer · one-bit · <span id="art-byte-count">1,360 bytes</span></p>
+
+            <div class="art-tools" aria-label="Artwork editing tools">
+              <button id="art-pen-button" class="outline-button is-active" type="button" aria-pressed="true">Draw</button>
+              <button id="art-eraser-button" class="outline-button" type="button" aria-pressed="false">Erase</button>
+              <label class="range-control" for="art-brush-size">Brush <input id="art-brush-size" type="range" min="1" max="8" value="2" /></label>
+              <button id="art-invert-button" class="outline-button" type="button">Invert</button>
+              <button id="art-clear-button" class="text-button" type="button">Clear</button>
+            </div>
+
+            <div class="art-file-actions">
+              <input id="art-image-input" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+              <button id="art-import-button" class="outline-button" type="button">Import image</button>
+              <button id="art-download-button" class="outline-button" type="button">Download bitmap backup</button>
+              <label class="range-control" for="art-threshold">Import threshold <input id="art-threshold" type="range" min="20" max="240" value="160" /></label>
+            </div>
+            <p id="art-editor-feedback" class="draft-feedback" aria-live="polite"></p>
+          </section>
+
+          <section class="art-upload-panel" aria-labelledby="upload-heading">
+            <p class="section-label">USB transfer</p>
+            <h3 id="upload-heading">Save to keyboard</h3>
+            <ol class="upload-steps">
+              <li>Install the art-enabled firmware once.</li>
+              <li>Connect the half you are updating by USB.</li>
+              <li>Connect here, then save the selected art.</li>
+            </ol>
+            <button id="art-connect-button" class="outline-button upload-primary" type="button">Connect USB artwork port</button>
+            <p id="art-connection-status" class="connection-status" aria-live="polite">No artwork port connected.</p>
+            <button id="art-upload-button" class="disabled-button upload-primary" type="button" disabled>Save selected image to keyboard</button>
+            <button id="art-disconnect-button" class="text-button" type="button" hidden>Disconnect</button>
+            <progress id="art-upload-progress" max="1" value="0" hidden>0%</progress>
+            <p class="upload-boundary">USB artwork writes are checksum-validated and atomically saved in a dedicated display partition. They cannot alter the keymap, Bluetooth bonds, or ZMK Studio settings.</p>
+          </section>
+        </div>
+      </section>
+
+      <section id="serialization-panel" class="serialization-panel" hidden aria-live="polite">
+        <div class="panel-heading compact">
+          <div>
+            <p class="section-label">Normalized record</p>
+            <h2>Deterministic project state</h2>
+          </div>
+          <button id="close-serialization" class="text-button" type="button">Close</button>
+        </div>
+        <pre id="serialization-output"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
