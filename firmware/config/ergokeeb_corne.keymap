@@ -9,16 +9,18 @@
  * cluster on every layer.
  */
 
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 1200
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 20
+
 #include <behaviors.dtsi>
+#include <dt-bindings/keebweaver/pointer_speed.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <dt-bindings/zmk/mouse.h>
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/rgb.h>
 #include <input/processors.dtsi>
-
-#define ZMK_MOUSE_DEFAULT_MOVE_VAL 1200
-#define ZMK_MOUSE_DEFAULT_SCRL_VAL 20
 
 / {
     behaviors {
@@ -28,6 +30,20 @@
             #binding-cells = <0>;
             bindings = <&kp LEFT_SHIFT>, <&kp CAPS>;
         };
+
+        pointer_speed: pointer_speed {
+            compatible = "keebweaver,behavior-pointer-speed";
+            display-name = "Pointer Speed";
+            #binding-cells = <1>;
+        };
+    };
+
+    keebweaver_pointer_speed: keebweaver_pointer_speed {
+        compatible = "keebweaver,input-processor-pointer-speed";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_X INPUT_REL_Y>;
+        track-remainders;
     };
 
     rgb_encoder: rgb_encoder {
@@ -82,12 +98,16 @@
         symbols_layer {
             display-name = "Symbols";
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans                         &mmv MOVE_UP                     &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT  &kp BSPC
+&trans  &trans  &trans  &trans  &trans  &trans                         &pointer_speed KEEBWEAVER_POINTER_SPEED_UP                     &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT  &kp BSPC
 &trans  &trans  &trans  &trans  &trans  &trans               &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &kp LPAR  &kp RPAR  &kp LBKT  &kp RBKT  &kp LBRC  &kp RBRC
-&trans  &trans  &trans  &trans  &trans  &trans  &trans              &mmv MOVE_DOWN                   &kp MINUS  &kp EQUAL  &kp UNDER  &kp PLUS  &kp BSLH  &kp PIPE
+&trans  &trans  &trans  &trans  &trans  &trans  &pointer_speed KEEBWEAVER_POINTER_SPEED_DOWN                   &kp MINUS  &kp EQUAL  &kp UNDER  &kp PLUS  &kp BSLH  &kp PIPE
                                      &trans  &trans  &trans                                     &kp RET  &kp SQT  &kp LS(SQT)
             >;
             sensor-bindings = <&scroll_encoder>;
         };
     };
+};
+
+&mmv_input_listener {
+    input-processors = <&keebweaver_pointer_speed>;
 };

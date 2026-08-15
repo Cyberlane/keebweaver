@@ -29,7 +29,9 @@ git -C "$board_source_dir" checkout --detach "$board_source_commit"
 # Every upstream board implementation file used by the build carries an
 # explicit MIT SPDX declaration. KeebWeaver supplies its own keymap.
 while IFS= read -r board_file; do
-  if ! git -C "$board_source_dir" show "$board_source_commit:$board_file" | grep -q 'SPDX-License-Identifier: MIT'; then
+  # Do not use grep -q here: with pipefail, a large source file can make
+  # `git show` receive SIGPIPE after grep exits early and look like a failure.
+  if ! git -C "$board_source_dir" show "$board_source_commit:$board_file" | grep 'SPDX-License-Identifier: MIT' >/dev/null; then
     printf 'Missing MIT SPDX declaration in required board source: %s\n' "$board_file" >&2
     exit 1
   fi
@@ -63,7 +65,7 @@ docker run --rm \
     source /work/build-work/zephyr/zephyr-env.sh
     zephyr_args="-DZephyr_DIR=/work/build-work/zephyr/share/zephyr-package/cmake -DZMK_CONFIG=/work/build-work/config -DZMK_EXTRA_MODULES=/work/CorneZMK;/project/firmware/modules/keebweaver_display"
     west build -p always -s zmk/app -d /work/build-work/out/keebweaver-ergokeeb-corne-left -b ergokeeb_corne_left \
-      -S studio-rpc-usb-uart -- ${zephyr_args} -DSHIELD=nice_view -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
+      -S studio-rpc-usb-uart -- ${zephyr_args} -DSHIELD=nice_view -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n -DCONFIG_KEEBWEAVER_LAYER_STATE_BLE=y
     west build -p always -s zmk/app -d /work/build-work/out/keebweaver-ergokeeb-corne-right -b ergokeeb_corne_right \
       -- ${zephyr_args} -DSHIELD=nice_view
     west build -p always -s zmk/app -d /work/build-work/out/keebweaver-ergokeeb-corne-settings-reset -b ergokeeb_corne_left \

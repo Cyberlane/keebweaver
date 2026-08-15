@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: MIT
+
+description: KeebWeaver runtime pointer-speed adjustment behavior
+
+compatible: "keebweaver,behavior-pointer-speed"
+
+include: one_param.yaml

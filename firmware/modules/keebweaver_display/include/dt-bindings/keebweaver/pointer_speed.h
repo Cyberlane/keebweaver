@@ -1,0 +1,7 @@
+/* SPDX-License-Identifier: MIT */
+
+#pragma once
+
+#define KEEBWEAVER_POINTER_SPEED_UP 0
+#define KEEBWEAVER_POINTER_SPEED_DOWN 1
+#define KEEBWEAVER_POINTER_SPEED_RESET 2

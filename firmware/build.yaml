@@ -3,7 +3,7 @@ include:
   - board: ergokeeb_corne_left
     shield: nice_view
     snippet: studio-rpc-usb-uart
-    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n -DCONFIG_KEEBWEAVER_LAYER_STATE_BLE=y
     artifact-name: keebweaver-ergokeeb-corne-left
   - board: ergokeeb_corne_right
     shield: nice_view

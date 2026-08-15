@@ -23,3 +23,23 @@ config KEEBWEAVER_DISPLAY_ART_USB_STACK_SIZE
     range 768 2048
 
 endif
+
+config KEEBWEAVER_LAYER_STATE_BLE
+    bool "KeebWeaver BLE layer-state helper"
+    default n
+    depends on BT
+    depends on ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Expose the currently selected ZMK layer and pointer speed through an
+      encrypted GATT service for the KeebWeaver macOS overlay. Link
+      encryption does not provide application-level device identity. The
+      overlay may write only the bounded, volatile pointer-speed setting.
+
+config KEEBWEAVER_POINTER_SPEED
+    bool "KeebWeaver runtime pointer speed"
+    default y
+    depends on ZMK_POINTING
+    help
+      Scale relative pointer movement at runtime without changing the
+      firmware image. The setting is intentionally volatile and is reset to
+      the documented default after a reboot.

@@ -9,6 +9,8 @@ const leftFirmwareConfig = readFileSync(new URL("../firmware/config/ergokeeb_cor
 const firmwareOverlay = readFileSync(new URL("../firmware/config/ergokeeb_corne.overlay", import.meta.url), "utf8");
 const displayKconfig = readFileSync(new URL("../firmware/modules/keebweaver_display/Kconfig", import.meta.url), "utf8");
 const displayFirmware = readFileSync(new URL("../firmware/modules/keebweaver_display/src/display_art.c", import.meta.url), "utf8");
+const layerStateFirmware = readFileSync(new URL("../firmware/modules/keebweaver_display/src/layer_state_ble.c", import.meta.url), "utf8");
+const pointerSpeedHeader = readFileSync(new URL("../firmware/modules/keebweaver_display/include/keebweaver/pointer_speed.h", import.meta.url), "utf8");
 const buildScript = readFileSync(new URL("../firmware/scripts/build.sh", import.meta.url), "utf8");
 const westManifest = readFileSync(new URL("../firmware/west.yml", import.meta.url), "utf8");
 
@@ -26,10 +28,18 @@ test("firmware maps a right-hand numpad and common symbols", () => {
   assert.match(keymap, /&kp LPAR\s+&kp RPAR\s+&kp LBKT\s+&kp RBKT\s+&kp LBRC\s+&kp RBRC/);
 });
 
-test("firmware preserves the five-way mouse/click cluster on every layer", () => {
-  for (const binding of ["&mmv MOVE_UP", "&mmv MOVE_LEFT", "&mkp LCLK", "&mmv MOVE_RIGHT", "&mmv MOVE_DOWN"]) {
+test("firmware preserves the pointer cluster and adds Symbols speed controls", () => {
+  for (const binding of ["&mmv MOVE_LEFT", "&mkp LCLK", "&mmv MOVE_RIGHT"]) {
     assert.equal(keymap.split(binding).length - 1, 4, `${binding} must occur once per layer`);
   }
+  assert.equal(keymap.split("&mmv MOVE_UP").length - 1, 3);
+  assert.equal(keymap.split("&mmv MOVE_DOWN").length - 1, 3);
+  assert.match(keymap, /&pointer_speed KEEBWEAVER_POINTER_SPEED_UP/);
+  assert.match(keymap, /&pointer_speed KEEBWEAVER_POINTER_SPEED_DOWN/);
+  assert.match(keymap, /#include <dt-bindings\/keebweaver\/pointer_speed\.h>/);
+  assert.match(pointerSpeedHeader, /KEEBWEAVER_POINTER_SPEED_MIN 300u/);
+  assert.match(pointerSpeedHeader, /KEEBWEAVER_POINTER_SPEED_DEFAULT 1200u/);
+  assert.match(pointerSpeedHeader, /KEEBWEAVER_POINTER_SPEED_MAX 2400u/);
 });
 
 test("firmware build matrix uses the documented ErgoKeeb targets", () => {
@@ -45,6 +55,18 @@ test("firmware build matrix uses the documented ErgoKeeb targets", () => {
   assert.doesNotMatch(firmwareConfig, /CONFIG_EC11/);
   assert.match(leftFirmwareConfig, /CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y/);
   assert.match(buildScript, /ergokeeb_corne_left\.conf/);
+  assert.match(buildMatrix, /board: ergokeeb_corne_left[\s\S]*CONFIG_KEEBWEAVER_LAYER_STATE_BLE=y/);
+  assert.doesNotMatch(buildMatrix, /board: ergokeeb_corne_right[\s\S]*CONFIG_KEEBWEAVER_LAYER_STATE_BLE=y/);
+});
+
+test("BLE helper is encrypted, bounded, and rejects malformed pointer writes", () => {
+  assert.match(displayKconfig, /default n[\s\S]*depends on ZMK_SPLIT_ROLE_CENTRAL/);
+  assert.match(displayKconfig, /Link\s+encryption does not provide application-level device identity/);
+  assert.match(layerStateFirmware, /BT_GATT_PERM_READ_ENCRYPT/);
+  assert.match(layerStateFirmware, /BT_GATT_PERM_WRITE_ENCRYPT/);
+  assert.match(layerStateFirmware, /BT_ATT_ERR_INVALID_OFFSET/);
+  assert.match(layerStateFirmware, /BT_ATT_ERR_INVALID_ATTRIBUTE_LEN/);
+  assert.match(layerStateFirmware, /keebweaver_pointer_speed_set\(sys_get_le16\(buf\)\)/);
 });
 
 test("display artwork uses a dedicated partition and separate USB endpoint", () => {
