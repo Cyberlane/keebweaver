@@ -8,3 +8,5 @@ uploads/
 *.ekar
 *.kwar
 .DS_Store
+macos/build/
+macos/KeebWeaverOverlay/.build/

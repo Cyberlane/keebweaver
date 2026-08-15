@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT -->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>KeebWeaver Overlay</string>
+	<key>CFBundleExecutable</key>
+	<string>KeebWeaverOverlay</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.keebweaver.overlay</string>
+	<key>CFBundleName</key>
+	<string>KeebWeaver Overlay</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>KeebWeaver Overlay reads the keyboard's active layer and can adjust its bounded runtime pointer speed.</string>
+</dict>
+</plist>
