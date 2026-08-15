@@ -48,6 +48,7 @@ test("release creation stays draft until the separate manual verification workfl
 
   assert.match(release, /gh release create .*--draft/);
   assert.doesNotMatch(release, /--draft=false/);
+  assert.match(release, /npm run check\n\s+env:\n\s+GH_TOKEN: \$\{\{ github\.token \}\}/);
   assert.match(publish, /workflow_dispatch:/);
   assert.match(publish, /sha256sum -c SHA256SUMS/);
   assert.match(publish, /gh attestation verify/);
