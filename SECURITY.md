@@ -19,12 +19,24 @@ Bluetooth records, recovered firmware, or private device captures.
 ## Security boundaries
 
 - The browser may upload display artwork only after a versioned handshake,
-  physical-side identity check, length validation, and CRC validation.
+  firmware-reported side check, length validation, and CRC validation. A
+  self-reported side is a compatibility check, not cryptographic device
+  identity.
 - The artwork partition is independent of ZMK settings and Bluetooth storage.
 - Firmware builds produce files only; they never mount or write bootloader
   volumes.
 - Project imports validate fail closed and preserve unknown records rather than
-  silently producing lossy output.
+  silently producing lossy output. Imported behavior labels are inserted as
+  text, not interpreted as HTML.
+- The Overlay does not request Accessibility or Input Monitoring permission and
+  does not inspect typed input. It matches the exact keyboard name, custom UUIDs,
+  and required characteristic properties. Firmware requires an encrypted BLE
+  link, but another peripheral can copy a name and UUID, so the channel is not
+  cryptographic application identity.
+- The Overlay can write only a `300...2400` volatile pointer-speed value; it
+  cannot change keymaps, bonds, persistent ZMK settings, or firmware.
 
 These boundaries reduce risk but do not make third-party firmware installation
 risk-free. Keep a verified recovery image for the exact device before flashing.
+Published firmware comes only from the signed-tag workflow with checksums,
+SBOMs, license notices, and artifact attestations.

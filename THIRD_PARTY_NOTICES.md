@@ -9,7 +9,17 @@ ZMK and the historical nice!view Mountain and Balloon bitmap data are licensed
 under the MIT License. The bitmap source is
 `app/boards/shields/nice_view/widgets/art.c` at commit
 `f1b944b1efc01805a769cb2b15797c2c611bcc5f`. The applicable notice is preserved
-in `LICENSES/ZMK-MIT.txt`.
+in `LICENSES/ZMK-MIT.txt`. Firmware builds pin ZMK at commit
+`edf5c0814fd3ea202e43aad2d68fd32e882a518c`.
+
+## Zephyr
+
+Firmware builds pin Zephyr at commit
+`dacab4875df72109b96cc8977547a0dc04875bcd`, licensed under Apache License 2.0.
+The license is preserved in `LICENSES/ZEPHYR-APACHE-2.0.txt`. The pinned Zephyr
+tree has no root `NOTICE` file. Release firmware includes both a compact
+dependency inventory and Zephyr-generated, file-level SPDX documents for each
+exact UF2 target.
 
 ## ErgoKeeb Corne board definitions
 
@@ -24,6 +34,13 @@ and does not redistribute the upstream repository's unlicensed example keymap.
 
 The browser application uses Three.js 0.185.1 under the MIT License. The exact
 dependency is recorded in `package-lock.json`.
+
+## Nord
+
+The native Overlay uses the Nord color palette from `nordtheme/nord` at commit
+`1cef71605416a222e57225b544540ce0fcec18d4`, Copyright (c) 2016-present Sven
+Greb. Nord is MIT licensed; its notice is preserved in
+`LICENSES/NORD-MIT.txt`.
 
 ErgoKeeb, Eyelash Corne, ZMK, nice!view, Three.js, and other names are the
 property of their respective owners. KeebWeaver is an independent community

@@ -1,7 +1,17 @@
 # Sensitive build, release, and hardware boundaries require maintainer review.
 /.github/workflows/ @Cyberlane
+/.github/CODEOWNERS @Cyberlane
+/macos/ @Cyberlane
 /firmware/ @Cyberlane
+/docs/ @Cyberlane
+/LICENSES/ @Cyberlane
+/THIRD_PARTY_NOTICES.md @Cyberlane
+/package.json @Cyberlane
+/package-lock.json @Cyberlane
+/test/ @Cyberlane
 /scripts/check-public-boundary.mjs @Cyberlane
+/scripts/check-signed-history.mjs @Cyberlane
+/scripts/create-firmware-sbom.mjs @Cyberlane
 /scripts/check-release-version.mjs @Cyberlane
 /scripts/verify-uf2.mjs @Cyberlane
 /SECURITY.md @Cyberlane

@@ -28,15 +28,30 @@ state.
 
 ## Project documents
 
-`keebweaver-project` version 1 is deterministic JSON with no timestamps. It
-contains a non-runnable profile intent, not compiled keycodes. Importing a
-project cannot access Web Serial or change firmware.
+The outer `keebweaver-project` envelope is format version 1. Its bundled
+project-intent record is schema version 2; those are independent version
+domains. Serialization is deterministic JSON with no timestamps. The document
+contains non-runnable behavior labels, not compiled keycodes. Imported labels
+are rendered as text, and importing a project cannot access Web Serial or
+change firmware.
+
+## Native macOS Overlay
+
+`macos/KeebWeaverOverlay` is a separate, source-built projection of the
+checked-in beginner layout. It does not consume project files or typed input.
+Manual tabs are authoritative when the optional helper is absent. With the
+helper, CoreBluetooth can read versioned layer-state frames and write one
+bounded, volatile pointer-speed value. Keyboard name, UUID, characteristic
+properties, and BLE link encryption narrow the connection boundary but do not
+provide cryptographic application identity.
 
 ## Firmware
 
 The firmware build uses the custom side-specific ErgoKeeb boards, the checked-in
 keymap/configuration, and the KeebWeaver display module. `build.sh` records all
-source revisions, the pinned container digest, and artifact checksums.
+source revisions, the pinned container and SDK versions, the project tree/dirty
+state, artifact checksums, and Zephyr-generated file-level SPDX documents for
+each target.
 
 Build and install are separate operations. No script in this repository mounts
 or writes a bootloader volume.

@@ -36,6 +36,12 @@ Bluetooth host use. The separately versioned artwork transport has automated
 protocol, partition, and build coverage; each release still identifies whether
 live-device artwork qualification was performed.
 
+The optional Overlay BLE helper is source- and build-qualified for the exact
+normal left target. Live layer notification, reconnect, link-encryption, and
+pointer-speed qualification on physical hardware has not yet been recorded for
+the OSS release, so automatic Overlay following remains experimental. Manual
+Overlay layer selection does not depend on firmware or physical hardware.
+
 ## Unsupported substitutions
 
 - Generic Corne, Sofle, or nice!nano shield images.

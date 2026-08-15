@@ -20,10 +20,21 @@ npm ci
 npm run check
 ```
 
+Commits must be signed with a GitHub-verifiable GPG, SSH, or S/MIME signature.
+Use a GitHub-provided noreply address if you do not want a personal email in the
+public commit graph.
+
 Firmware changes must additionally pass:
 
 ```sh
 npm run build:firmware
+```
+
+Overlay changes must additionally pass:
+
+```sh
+swift test --package-path macos/KeebWeaverOverlay
+bash macos/KeebWeaverOverlay/build-app.sh
 ```
 
 Do not flash hardware merely to validate a pull request. Hardware installation
@@ -34,11 +45,9 @@ and live qualification require an explicit device owner decision.
 - Explain the user-visible result and the exact supported device scope.
 - Include tests for schema, serialization, protocol, or geometry changes.
 - State which checks were run and identify any unavailable live-device checks.
+- For BLE changes, describe the protocol version, characteristic permissions,
+  encryption/identity boundary, and manual fallback.
 - Keep generated UF2 files and local build work out of commits.
 - Preserve third-party copyright and SPDX notices.
-
-Git publishes commit author metadata. Contributors who do not want to expose a
-personal address should configure their GitHub-provided noreply email before
-committing; KeebWeaver does not require a specific public-email provider.
 
 Contributions are accepted under the repository's MIT License.

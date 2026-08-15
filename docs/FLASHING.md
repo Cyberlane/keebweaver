@@ -26,6 +26,12 @@ release notes do not require a settings reset:
 4. Reconnect normally and verify USB typing, the wireless split, both displays,
    all four layers, pointer movement/click, and existing Bluetooth operation.
 
+The optional Overlay BLE helper is compiled only into the exact normal left
+image. It is not present in the right or settings-reset image and does not
+install itself. After an explicit left-half update, qualify layer notifications
+and bounded pointer-speed changes separately; do not infer live-device success
+from a compiler or simulator result.
+
 ## Clean installation or recovery reset
 
 Only use this path when the release notes or a known recovery procedure require

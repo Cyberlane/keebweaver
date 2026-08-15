@@ -17,7 +17,7 @@ body:
     id: target
     attributes:
       label: Hardware target
-      placeholder: ergokeeb_corne_left/right, or browser-only
+      placeholder: ergokeeb_corne_left/right, browser-only, or Overlay/macOS
     validations:
       required: true
   - type: textarea

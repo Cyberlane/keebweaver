@@ -21,8 +21,9 @@ Corne firmware is **not** compatible with this target.
   after compatible firmware is installed.
 - Builds side-specific ZMK UF2 images in a pinned container without mounting or
   writing to a keyboard.
-- Makes no analytics or application network requests. Production browser
-  assets are bundled locally.
+- Makes no analytics or application-initiated network requests. Production
+  browser assets are bundled locally; serving or downloading the app still
+  uses the hosting provider's network boundary.
 
 KeebWeaver does not automatically flash firmware, reset settings, change
 Bluetooth bonds, or apply ZMK Studio state.
@@ -40,6 +41,13 @@ npm run serve
 Open <http://localhost:4173>. Chrome or another Web Serial implementation is
 required only for direct artwork upload; design, validation, and project-file
 work function without a connected keyboard.
+
+For a native always-on-top learning aid on macOS, see the
+[macOS layout overlay](docs/OVERLAY.md). It is a separate local companion and
+does not flash, modify, or inspect typed input. With the optional BLE helper
+firmware, it reads layer state and can write only a bounded, volatile pointer
+speed value over an encrypted BLE link. The first OSS distribution is
+source-built and ad-hoc signed, not Developer ID signed or notarized.
 
 Create an optimized static build with:
 
@@ -93,20 +101,23 @@ writes ignored local artifacts to `firmware/artifacts/`:
 - `keebweaver-ergokeeb-corne-settings-reset.uf2`
 - `build-manifest.txt`
 - `SHA256SUMS`
+- `spdx/` file-level source/build inventories for each exact target
 
 The left and right images are not interchangeable. The settings-reset image is
 destructive: it clears persistent ZMK settings and Bluetooth bonds. Read the
 [installation and recovery guide](docs/FLASHING.md) before copying any UF2.
 
 Release binaries are built only by the tag-triggered GitHub Actions workflow.
-Each release includes checksums, the pinned build manifest, and a GitHub
-artifact provenance attestation. Verify a downloaded release with:
+The workflow leaves a draft for a separate manual verification-and-publish
+workflow. Each published release includes checksums, the pinned build manifest,
+dependency and file-level SPDX inventories, license notices, and GitHub
+artifact provenance attestations. Verify a downloaded release with:
 
 ```sh
 sha256sum -c SHA256SUMS
 gh attestation verify keebweaver-ergokeeb-corne-left.uf2 \
   --repo Cyberlane/keebweaver
-gh release verify v0.1.1 --repo Cyberlane/keebweaver
+gh release verify v0.2.0 --repo Cyberlane/keebweaver
 ```
 
 ## Display artwork
@@ -130,9 +141,11 @@ npm run build:firmware
 ```
 
 `npm run check` runs unit tests, the production build, release-metadata checks,
-and the public-boundary audit. The audit rejects tracked device images,
-firmware captures, local home paths, private artifact directories, and private
-content retained anywhere in reachable Git history.
+the signed-history policy, and the public-boundary audit. The audit rejects
+tracked device images, firmware captures, local home paths, private artifact
+directories, and private content retained anywhere in reachable Git history.
+`"private": true` in `package.json` prevents accidental npm publication; it
+does not change the repository's MIT source license.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and
 [SUPPORT.md](SUPPORT.md). By participating, contributors agree to the

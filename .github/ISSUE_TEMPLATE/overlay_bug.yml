@@ -1,0 +1,55 @@
+name: macOS Overlay bug
+description: Report a reproducible native Overlay or BLE-helper problem
+title: "overlay: "
+labels: [bug, overlay]
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach pairing records, Bluetooth captures, recovery firmware, credentials, or private device data.
+  - type: input
+    id: version
+    attributes:
+      label: KeebWeaver version
+      placeholder: v0.2.0 or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS and Swift versions
+      placeholder: macOS 15.6; output of xcrun swift --version
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Overlay mode
+      options:
+        - Manual layer tabs only
+        - BLE automatic layer following
+        - BLE pointer-speed control
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Include expected behavior, actual behavior, and minimal reproduction steps.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Safe verification details
+      placeholder: Swift test result, source build result, exact left target, and whether any firmware was written
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I have not attached private Bluetooth data, captures, or firmware.
+          required: true
+        - label: I identified whether this involved a physical device write.
+          required: true
