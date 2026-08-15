@@ -1,16 +1,19 @@
 {
   "name": "keebweaver",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Open configurator, display-art studio, and reproducible ZMK firmware toolkit for supported split keyboards.",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check": "npm run test && npm run build && npm run check:public && npm run check:release",
+    "check": "npm run test && npm run build && npm run check:public && npm run check:history && npm run check:release",
     "test": "node --test",
     "check:public": "node scripts/check-public-boundary.mjs",
+    "check:history": "node scripts/check-signed-history.mjs",
     "check:release": "node scripts/check-release-version.mjs",
+    "licenses:bundle": "node scripts/create-license-bundle.mjs",
+    "sbom:firmware": "node scripts/create-firmware-sbom.mjs",
     "serve": "vite --host 127.0.0.1 --port 4173",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
     "build:firmware": "bash firmware/scripts/build.sh"

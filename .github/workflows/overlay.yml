@@ -1,0 +1,36 @@
+name: Overlay
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  overlay-ci:
+    name: overlay-ci
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.12.0
+      - name: Record Swift toolchain
+        run: xcrun swift --version
+      - name: Test Overlay package
+        run: swift test --package-path macos/KeebWeaverOverlay
+      - name: Build source-distribution app bundle
+        run: bash macos/KeebWeaverOverlay/build-app.sh
+      - name: Verify app metadata and ad-hoc development signature
+        run: |
+          app="macos/build/KeebWeaver Overlay.app"
+          plutil -lint "$app/Contents/Info.plist"
+          test "$(plutil -extract CFBundleShortVersionString raw "$app/Contents/Info.plist")" = "$(node -p 'require("./package.json").version')"
+          test "$(plutil -extract LSMinimumSystemVersion raw "$app/Contents/Info.plist")" = "13.0"
+          codesign --verify --deep --strict "$app"

@@ -8,6 +8,10 @@ on:
     paths:
       - "firmware/**"
       - "scripts/verify-uf2.mjs"
+      - "scripts/create-firmware-sbom.mjs"
+      - "scripts/create-license-bundle.mjs"
+      - "LICENSES/**"
+      - "THIRD_PARTY_NOTICES.md"
       - ".github/workflows/firmware.yml"
   workflow_dispatch:
 
@@ -34,7 +38,9 @@ jobs:
           if [[ "$EVENT_NAME" != "pull_request" ]]; then
             echo "firmware=true" >> "$GITHUB_OUTPUT"
           elif git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- \
-            firmware scripts/verify-uf2.mjs package.json package-lock.json .github/workflows/firmware.yml; then
+            firmware scripts/verify-uf2.mjs scripts/create-firmware-sbom.mjs \
+            scripts/create-license-bundle.mjs LICENSES THIRD_PARTY_NOTICES.md \
+            package.json package-lock.json .github/workflows/firmware.yml; then
             echo "firmware=false" >> "$GITHUB_OUTPUT"
           else
             echo "firmware=true" >> "$GITHUB_OUTPUT"
@@ -65,6 +71,7 @@ jobs:
             firmware/artifacts/keebweaver-*.uf2
             firmware/artifacts/build-manifest.txt
             firmware/artifacts/SHA256SUMS
+            firmware/artifacts/spdx/
 
   firmware-gate:
     name: firmware-gate

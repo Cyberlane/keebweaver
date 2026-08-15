@@ -16,6 +16,13 @@ board_source_commit=5d79d8b1cef4168d46d4ff975a65523928ea2ba1
 zmk_commit=edf5c0814fd3ea202e43aad2d68fd32e882a518c
 zephyr_commit=dacab4875df72109b96cc8977547a0dc04875bcd
 container_image=zmkfirmware/zmk-build-arm@sha256:edb1c953438c6f720ddb79c3762f3972013b7fbbaf4fff3592fc869983e7afc5
+zephyr_sdk_version=0.16.9
+project_commit=$(git -C "$project_root" rev-parse HEAD)
+project_tree=$(git -C "$project_root" rev-parse HEAD^{tree})
+project_dirty=false
+if [[ -n "$(git -C "$project_root" status --porcelain --untracked-files=normal)" ]]; then
+  project_dirty=true
+fi
 
 mkdir -p "$work_root" "$build_root/config" "$artifacts_dir"
 
@@ -59,6 +66,7 @@ docker run --rm \
   -w /work/build-work \
   "$container_image" bash -lc '
     set -euo pipefail
+    test -d /opt/zephyr-sdk-0.16.9
     if [[ ! -d .west ]]; then west init -l config; fi
     west update --fetch-opt=--filter=tree:0
     west zephyr-export
@@ -70,6 +78,20 @@ docker run --rm \
       -- ${zephyr_args} -DSHIELD=nice_view
     west build -p always -s zmk/app -d /work/build-work/out/keebweaver-ergokeeb-corne-settings-reset -b ergokeeb_corne_left \
       -- ${zephyr_args} -DSHIELD=settings_reset
+
+    for target in \
+      keebweaver-ergokeeb-corne-left \
+      keebweaver-ergokeeb-corne-right \
+      keebweaver-ergokeeb-corne-settings-reset; do
+      build_dir="/work/build-work/out/${target}"
+      west spdx --init -d "${build_dir}"
+      west build -c -d "${build_dir}"
+      west spdx -d "${build_dir}" \
+        -n "https://github.com/Cyberlane/keebweaver/spdx/${target}"
+      test -s "${build_dir}/spdx/app.spdx"
+      test -s "${build_dir}/spdx/zephyr.spdx"
+      test -s "${build_dir}/spdx/build.spdx"
+    done
   '
 
 actual_zmk=$(git -C "$build_root/zmk" rev-parse HEAD)
@@ -83,15 +105,30 @@ cp "$build_root/out/keebweaver-ergokeeb-corne-left/zephyr/zmk.uf2" "$artifacts_d
 cp "$build_root/out/keebweaver-ergokeeb-corne-right/zephyr/zmk.uf2" "$artifacts_dir/keebweaver-ergokeeb-corne-right.uf2"
 cp "$build_root/out/keebweaver-ergokeeb-corne-settings-reset/zephyr/zmk.uf2" "$artifacts_dir/keebweaver-ergokeeb-corne-settings-reset.uf2"
 
+for target in \
+  keebweaver-ergokeeb-corne-left \
+  keebweaver-ergokeeb-corne-right \
+  keebweaver-ergokeeb-corne-settings-reset; do
+  target_spdx_dir="$artifacts_dir/spdx/$target"
+  mkdir -p "$target_spdx_dir"
+  cp "$build_root/out/$target/spdx/app.spdx" "$target_spdx_dir/app.spdx"
+  cp "$build_root/out/$target/spdx/zephyr.spdx" "$target_spdx_dir/zephyr.spdx"
+  cp "$build_root/out/$target/spdx/build.spdx" "$target_spdx_dir/build.spdx"
+done
+
 node "$project_root/scripts/verify-uf2.mjs" "$artifacts_dir"/keebweaver-*.uf2
 
 {
   printf 'project=KeebWeaver\n'
+  printf 'project_commit=%s\n' "$project_commit"
+  printf 'project_tree=%s\n' "$project_tree"
+  printf 'project_dirty=%s\n' "$project_dirty"
   printf 'board_source_url=%s\n' "$board_source_url"
   printf 'board_source=%s\n' "$(git -C "$board_source_dir" rev-parse HEAD)"
   printf 'zmk=%s\n' "$actual_zmk"
   printf 'zephyr=%s\n' "$actual_zephyr"
   printf 'container=%s\n' "$container_image"
+  printf 'zephyr_sdk=%s\n' "$zephyr_sdk_version"
 } > "$artifacts_dir/build-manifest.txt"
 
 if command -v sha256sum >/dev/null 2>&1; then

@@ -5,15 +5,37 @@ on:
     tags:
       - "v*.*.*"
 
-permissions:
-  contents: write
-  id-token: write
-  attestations: write
+permissions: {}
 
 jobs:
+  overlay:
+    name: verify source-built Overlay
+    runs-on: macos-15
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.12.0
+      - run: swift test --package-path macos/KeebWeaverOverlay
+      - run: bash macos/KeebWeaverOverlay/build-app.sh
+      - name: Verify source-built app metadata and signature
+        run: |
+          app="macos/build/KeebWeaver Overlay.app"
+          test "$(plutil -extract CFBundleShortVersionString raw "$app/Contents/Info.plist")" = "$(node -p 'require("./package.json").version')"
+          test "$(plutil -extract LSMinimumSystemVersion raw "$app/Contents/Info.plist")" = "13.0"
+          codesign --verify --deep --strict "$app"
+
   release:
+    needs: overlay
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
     steps:
       - name: Check out tagged source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -31,15 +53,51 @@ jobs:
           tag_sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$GITHUB_REF_NAME" --jq '.object.sha')
           verified=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$tag_sha" --jq '.verification.verified')
           test "$verified" = true
+          tag_commit=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$tag_sha" --jq '.object.sha')
+          test "$tag_commit" = "$(git rev-parse HEAD)"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag_commit" --jq '.commit.verification.verified')" = true
+          git fetch origin main --no-tags
+          git merge-base --is-ancestor "$tag_commit" origin/main
       - run: npm ci
       - run: npm run check
       - run: npm run build:firmware
+      - name: Require a clean tagged firmware source tree
+        run: grep -Fx 'project_dirty=false' firmware/artifacts/build-manifest.txt
       - name: Create web dependency SBOM
         run: npm sbom --sbom-format spdx > firmware/artifacts/keebweaver-web.spdx.json
-      - name: Attest firmware binaries
+      - name: Create firmware dependency SBOM
+        run: SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)" npm run --silent sbom:firmware > firmware/artifacts/keebweaver-firmware-dependencies.spdx.json
+      - name: Package file-level firmware SPDX documents
+        run: |
+          export SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)"
+          cd firmware/artifacts
+          test "$(find spdx -type f -name '*.spdx' | wc -l)" -eq 9
+          tar --sort=name --mtime="@$SOURCE_DATE_EPOCH" --owner=0 --group=0 --numeric-owner -cf - spdx \
+            | gzip -n > keebweaver-firmware-file-level-spdx.tar.gz
+      - name: Create redistributed license bundle
+        run: npm run --silent licenses:bundle > firmware/artifacts/keebweaver-license-notices.txt
+      - name: Checksum every release asset
+        run: |
+          cd firmware/artifacts
+          sha256sum \
+            keebweaver-ergokeeb-corne-left.uf2 \
+            keebweaver-ergokeeb-corne-right.uf2 \
+            keebweaver-ergokeeb-corne-settings-reset.uf2 \
+            build-manifest.txt \
+            keebweaver-web.spdx.json \
+            keebweaver-firmware-dependencies.spdx.json \
+            keebweaver-firmware-file-level-spdx.tar.gz \
+            keebweaver-license-notices.txt > SHA256SUMS
+      - name: Attest release assets
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
-          subject-path: firmware/artifacts/keebweaver-*.uf2
+          subject-path: |
+            firmware/artifacts/keebweaver-*.uf2
+            firmware/artifacts/*.spdx.json
+            firmware/artifacts/*.tar.gz
+            firmware/artifacts/keebweaver-license-notices.txt
+            firmware/artifacts/build-manifest.txt
+            firmware/artifacts/SHA256SUMS
       - name: Upload workflow artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -50,6 +108,9 @@ jobs:
             firmware/artifacts/build-manifest.txt
             firmware/artifacts/SHA256SUMS
             firmware/artifacts/keebweaver-web.spdx.json
+            firmware/artifacts/keebweaver-firmware-dependencies.spdx.json
+            firmware/artifacts/keebweaver-firmware-file-level-spdx.tar.gz
+            firmware/artifacts/keebweaver-license-notices.txt
       - name: Create immutable-ready draft release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -71,8 +132,9 @@ jobs:
           firmware/artifacts/build-manifest.txt
           firmware/artifacts/SHA256SUMS
           firmware/artifacts/keebweaver-web.spdx.json
+          firmware/artifacts/keebweaver-firmware-dependencies.spdx.json
+          firmware/artifacts/keebweaver-firmware-file-level-spdx.tar.gz
+          firmware/artifacts/keebweaver-license-notices.txt
           --clobber
-      - name: Publish immutable release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release edit "$GITHUB_REF_NAME" --draft=false
+      - name: Leave the release draft for independent review
+        run: echo "Draft $GITHUB_REF_NAME is ready for the manual Publish release workflow." >> "$GITHUB_STEP_SUMMARY"
