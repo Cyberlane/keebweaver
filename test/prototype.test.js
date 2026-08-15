@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import { DEVICE_DEFINITION, DISPLAY_PRESENTATION, FIVE_WAY_CONTROL, FIVE_WAY_IDS, POSITION_IDS, PROJECT_LAYER_IDS, PROJECT_LAYER_SOURCES, positionById, stableSerialize } from "../src/model.js";
 import { PROJECT_INTENT, RUNTIME_BASELINE, fixtureWithOpaqueRecord } from "../src/fixtures.js";
@@ -123,6 +124,24 @@ test("project-file import fails closed for malformed or incompatible data", () =
   assert.match(wrongDevice.message, /different device/i);
   assert.equal(missingPosition.ok, false);
   assert.match(missingPosition.message, /missing position/i);
+});
+
+test("imported behavior labels remain inert text at the browser rendering boundary", () => {
+  const payload = "</span><img src=x onerror=alert(1)>";
+  const projectIntent = createDraftProjectIntent();
+  projectIntent.layers.find((layer) => layer.id === "Base").bindings.r0c0 = payload;
+  const imported = parseProjectFile(JSON.stringify({
+    format: "keebweaver-project",
+    formatVersion: PROJECT_FILE_VERSION,
+    projectIntent,
+  }), { deviceDefinition: DEVICE_DEFINITION, runtimeSnapshot: RUNTIME_BASELINE });
+  const browserSource = readFileSync(new URL("../src/app.js", import.meta.url), "utf8");
+
+  assert.equal(imported.ok, true);
+  assert.equal(imported.projectIntent.layers.find((layer) => layer.id === "Base").bindings.r0c0, payload);
+  assert.doesNotMatch(browserSource, /\.innerHTML\s*=|insertAdjacentHTML|document\.write|\beval\s*\(/);
+  assert.match(browserSource, /bindingLabel\.textContent\s*=\s*compactBinding\(binding\)/);
+  assert.match(browserSource, /positionLabel\.textContent\s*=\s*position\.id/);
 });
 
 test("opaque records are preserved and reported without a lossy pass", () => {

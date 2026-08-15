@@ -135,7 +135,12 @@ function renderKeyboard() {
     button.className = `accessible-key${position.kind === "five-way" ? " is-pointer" : ""}${position.kind === "source-only" ? " is-source-only" : ""}${position.id === selectedPositionId ? " is-selected" : ""}`;
     button.setAttribute("aria-pressed", String(position.id === selectedPositionId));
     button.setAttribute("aria-label", `${position.id}, ${position.label ?? "key"}, proposed ${binding}, captured baseline ${baselineBinding}`);
-    button.innerHTML = `<span>${compactBinding(binding)}</span><span class="key-id">${position.id}</span>`;
+    const bindingLabel = document.createElement("span");
+    bindingLabel.textContent = compactBinding(binding);
+    const positionLabel = document.createElement("span");
+    positionLabel.className = "key-id";
+    positionLabel.textContent = position.id;
+    button.replaceChildren(bindingLabel, positionLabel);
     button.addEventListener("click", () => selectPosition(position.id));
     return button;
   }));
