@@ -15,16 +15,29 @@ struct LayerStateFrame: Equatable {
     init?(data: Data) {
         guard let frameVersion = data.first,
               (frameVersion == Self.version && data.count == Self.byteCount) ||
-              (frameVersion == Self.legacyVersion && data.count == Self.legacyByteCount) else {
+              (frameVersion == Self.legacyVersion && data.count == Self.legacyByteCount),
+              Layer(firmwareIndex: data[data.startIndex + 1]) != nil else {
             return nil
         }
 
         highestLayerIndex = data[data.startIndex + 1]
         activeLayerMask = UInt16(data[data.startIndex + 2]) |
             (UInt16(data[data.startIndex + 3]) << 8)
-        pointerSpeed = frameVersion == Self.version
-            ? UInt16(data[data.startIndex + 4]) | (UInt16(data[data.startIndex + 5]) << 8)
-            : nil
+        if frameVersion == Self.version {
+            guard let speed = Self.decodePointerSpeed(data.suffix(2)) else { return nil }
+            pointerSpeed = speed
+        } else {
+            pointerSpeed = nil
+        }
+    }
+
+    static func decodePointerSpeed(_ data: Data) -> UInt16? {
+        guard data.count == 2 else { return nil }
+        let speed = UInt16(data[data.startIndex]) |
+            (UInt16(data[data.startIndex + 1]) << 8)
+        guard speed >= UInt16(OverlayModel.pointerSpeedMinimum),
+              speed <= UInt16(OverlayModel.pointerSpeedMaximum) else { return nil }
+        return speed
     }
 
     var layer: Layer? {

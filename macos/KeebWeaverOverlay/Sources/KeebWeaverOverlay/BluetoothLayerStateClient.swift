@@ -226,21 +226,26 @@ final class BluetoothLayerStateClient: NSObject, @preconcurrency CBCentralManage
         error: Error?
     ) {
         guard error == nil, let value = characteristic.value else {
+            reject(peripheral, reason: "Layer channel returned an unreadable value")
             return
         }
 
         if characteristic.uuid == Self.characteristicUUID {
-            guard let frame = LayerStateFrame(data: value) else { return }
+            guard let frame = LayerStateFrame(data: value) else {
+                reject(peripheral, reason: "Layer channel returned a malformed frame")
+                return
+            }
             if let pointerSpeed = frame.pointerSpeed {
                 onPointerSpeedChanged?(pointerSpeed)
             }
             if let layer = frame.layer {
                 onLayerChanged?(layer)
             }
-        } else if characteristic.uuid == Self.speedCharacteristicUUID,
-                  value.count == 2 {
-            let pointerSpeed = UInt16(value[value.startIndex]) |
-                (UInt16(value[value.startIndex + 1]) << 8)
+        } else if characteristic.uuid == Self.speedCharacteristicUUID {
+            guard let pointerSpeed = LayerStateFrame.decodePointerSpeed(value) else {
+                reject(peripheral, reason: "Pointer speed channel returned an invalid value")
+                return
+            }
             onPointerSpeedChanged?(pointerSpeed)
         }
     }

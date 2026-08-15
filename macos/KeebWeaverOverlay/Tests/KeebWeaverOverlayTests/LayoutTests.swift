@@ -60,6 +60,10 @@ final class LayoutTests: XCTestCase {
         XCTAssertNil(LayerStateFrame(data: Data([1, 3, 9])))
         XCTAssertNil(LayerStateFrame(data: Data([2, 3, 9, 0])))
         XCTAssertNil(LayerStateFrame(data: Data([1, 8, 9, 0]))?.layer)
+        XCTAssertNil(LayerStateFrame(data: Data([2, 3, 9, 0, 1, 0])))
+        XCTAssertNil(LayerStateFrame.decodePointerSpeed(Data([0xb0])))
+        XCTAssertNil(LayerStateFrame.decodePointerSpeed(Data([0x61, 0x09])))
+        XCTAssertEqual(LayerStateFrame.decodePointerSpeed(Data([0xb0, 0x04])), 1200)
     }
 
     func testBluetoothIdentityRequiresTheExactDocumentedName() {
