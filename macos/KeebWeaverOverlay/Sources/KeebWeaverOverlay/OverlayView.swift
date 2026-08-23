@@ -20,7 +20,12 @@ struct OverlayView: View {
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
-                .frame(maxWidth: 330)
+                .frame(maxWidth: 300)
+
+                Toggle("Shift held", isOn: $model.shiftPreview)
+                    .toggleStyle(.checkbox)
+                    .font(.caption)
+                    .help("Preview the output produced while Shift is held. The overlay does not monitor physical key presses.")
 
                 Text(model.visibleLayer.instruction)
                     .font(.caption)
@@ -31,7 +36,7 @@ struct OverlayView: View {
 
             pointerSpeedControl
 
-            KeyboardDiagramView(layer: model.visibleLayer)
+            KeyboardDiagramView(layer: model.visibleLayer, shiftHeld: model.shiftPreview)
 
             Divider()
                 .overlay(NordPalette.polarNight3.opacity(0.9))
@@ -159,6 +164,7 @@ struct OverlayView: View {
 
 private struct KeyboardDiagramView: View {
     let layer: Layer
+    let shiftHeld: Bool
 
     private let groupWidth: CGFloat = 245
     private let pointerWidth: CGFloat = 78
@@ -167,22 +173,22 @@ private struct KeyboardDiagramView: View {
         VStack(spacing: 4) {
             ForEach(KeyboardLayout.rows) { row in
                 HStack(spacing: 8) {
-                    KeyGroupView(keys: row.left, layer: layer)
+                    KeyGroupView(keys: row.left, layer: layer, shiftHeld: shiftHeld)
                         .frame(width: groupWidth, alignment: .leading)
 
                     PointerClusterView(row: row.pointer, layer: layer)
                         .frame(width: pointerWidth, height: 48)
 
-                    KeyGroupView(keys: row.right, layer: layer)
+                    KeyGroupView(keys: row.right, layer: layer, shiftHeld: shiftHeld)
                         .frame(width: groupWidth, alignment: .leading)
                 }
             }
 
             HStack(spacing: 8) {
-                KeyGroupView(keys: KeyboardLayout.leftThumbs, layer: layer)
+                KeyGroupView(keys: KeyboardLayout.leftThumbs, layer: layer, shiftHeld: shiftHeld)
                     .frame(width: groupWidth, alignment: .leading)
                 Color.clear.frame(width: pointerWidth, height: 48)
-                KeyGroupView(keys: KeyboardLayout.rightThumbs, layer: layer)
+                KeyGroupView(keys: KeyboardLayout.rightThumbs, layer: layer, shiftHeld: shiftHeld)
                     .frame(width: groupWidth, alignment: .leading)
             }
         }
@@ -193,11 +199,12 @@ private struct KeyboardDiagramView: View {
 private struct KeyGroupView: View {
     let keys: [KeySpec]
     let layer: Layer
+    let shiftHeld: Bool
 
     var body: some View {
         HStack(spacing: 3) {
             ForEach(keys) { key in
-                KeyCapView(key: key, layer: layer)
+                KeyCapView(key: key, layer: layer, shiftHeld: shiftHeld)
             }
         }
     }
@@ -206,13 +213,39 @@ private struct KeyGroupView: View {
 private struct KeyCapView: View {
     let key: KeySpec
     let layer: Layer
+    let shiftHeld: Bool
 
     private var isActiveOverride: Bool {
         layer != .base && key.isOverride(for: layer)
     }
 
-    private var primaryLabel: String {
+    private var normalLabel: String {
         key.label(for: layer)
+    }
+
+    private var primaryLabel: String {
+        key.label(for: layer, shiftHeld: shiftHeld)
+    }
+
+    private var shiftedLabel: String? {
+        guard let shifted = key.shiftedLabel(for: layer), shifted != normalLabel else { return nil }
+        return shifted
+    }
+
+    private var secondaryLabel: String? {
+        if shiftHeld {
+            if shiftedLabel != nil { return normalLabel }
+            if layer != .base { return isActiveOverride ? key.base : "base" }
+            return nil
+        }
+
+        if let shiftedLabel {
+            if layer == .base { return "⇧ \(shiftedLabel)" }
+            return "\(isActiveOverride ? key.base : "base") · ⇧\(shiftedLabel)"
+        }
+
+        if layer != .base { return isActiveOverride ? key.base : "base" }
+        return nil
     }
 
     var body: some View {
@@ -223,8 +256,8 @@ private struct KeyCapView: View {
                 .minimumScaleFactor(0.7)
                 .multilineTextAlignment(.center)
 
-            if layer != .base {
-                Text(isActiveOverride ? key.base : "base")
+            if let secondaryLabel {
+                Text(secondaryLabel)
                     .font(.system(size: 7, weight: .medium, design: .rounded))
                     .foregroundStyle(NordPalette.snowStorm0.opacity(0.62))
                     .lineLimit(1)
@@ -241,8 +274,8 @@ private struct KeyCapView: View {
         }
         .shadow(color: .black.opacity(0.16), radius: 1, y: 1)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(primaryLabel), \(layer.title) layer")
-        .help("\(primaryLabel) • \(layer.title)")
+        .accessibilityLabel("\(primaryLabel), \(layer.title) layer\(shiftHeld ? ", Shift held preview" : "")")
+        .help("\(primaryLabel) • \(layer.title)\(shiftedLabel == nil ? "" : " • Shift: \(shiftedLabel!)")")
     }
 
     private var accentColor: Color {

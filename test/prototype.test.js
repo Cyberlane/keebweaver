@@ -23,8 +23,12 @@ test("beginner proposal has four explicit layers linked to captured references",
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Base").bindings.r3c4, "Numbers (hold)");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Base").bindings.r3c5, "Space / Symbols (hold)");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Base").bindings.r3c11, "Enter / Navigation (hold)");
+  assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Base").bindings.r3c12, "Reserved");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Numbers").bindings.r0c11, "7");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Navigation").bindings.r1c1, "←");
+  assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Symbols").bindings.r2c13, "<");
+  assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Symbols").bindings.r2c14, ">");
+  assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Symbols").bindings.r2c16, "`");
 });
 
 test("reference-verified scene has 42 physical keys and keeps r2c6 source-only", () => {

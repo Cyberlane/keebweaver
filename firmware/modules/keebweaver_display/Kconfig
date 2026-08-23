@@ -33,7 +33,8 @@ config KEEBWEAVER_LAYER_STATE_BLE
       Expose the currently selected ZMK layer and pointer speed through an
       encrypted GATT service for the KeebWeaver macOS overlay. Link
       encryption does not provide application-level device identity. The
-      overlay may write only the bounded, volatile pointer-speed setting.
+      overlay may write only the bounded pointer-speed setting. The value is
+      persisted by the runtime pointer-speed module when settings are enabled.
 
 config KEEBWEAVER_POINTER_SPEED
     bool "KeebWeaver runtime pointer speed"
@@ -41,5 +42,18 @@ config KEEBWEAVER_POINTER_SPEED
     depends on ZMK_POINTING
     help
       Scale relative pointer movement at runtime without changing the
-      firmware image. The setting is intentionally volatile and is reset to
-      the documented default after a reboot.
+      firmware image. The setting is restored from persistent ZMK settings
+      after a reboot when the settings subsystem is enabled.
+
+if KEEBWEAVER_POINTER_SPEED && SETTINGS
+
+config KEEBWEAVER_POINTER_SPEED_SAVE_DEBOUNCE_MS
+    int "Milliseconds to debounce pointer-speed settings saves"
+    default 5000
+    range 1000 60000
+    help
+      Delay writes after a pointer-speed change so repeated adjustments do not
+      wear the settings storage. The latest value is persisted after the
+      adjustment settles.
+
+endif

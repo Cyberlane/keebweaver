@@ -119,6 +119,28 @@ h2 { margin-bottom: 0; font-size: 1rem; font-weight: 680; line-height: 1.35; }
   box-shadow: 0 0 12px var(--green);
 }
 
+.release-brief {
+  margin-bottom: 18px;
+  padding: 22px;
+  border: 1px solid #3b514d;
+  background:
+    radial-gradient(circle at 92% 0%, rgba(110, 231, 231, .11), transparent 24rem),
+    linear-gradient(135deg, rgba(18, 35, 33, .98), rgba(12, 20, 20, .98));
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .22);
+}
+
+.release-brief-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.release-brief-heading h2 { max-width: 590px; font-size: clamp(1.1rem, 2.1vw, 1.45rem); }
+.release-brief-intro { max-width: 330px; margin: 0; color: #b9cec7; font-size: .77rem; line-height: 1.5; text-align: right; }
+.release-brief-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; margin-top: 20px; }
+.release-card { min-width: 0; padding: 15px; border: 1px solid #31504a; background: rgba(7, 15, 15, .5); }
+.release-card .section-label { margin-bottom: 9px; color: var(--green); }
+.release-card h3 { margin: 0 0 8px; color: #f5faf5; font-size: .91rem; line-height: 1.25; }
+.release-card p:last-child { margin: 0; color: #a8b9b3; font-size: .72rem; line-height: 1.5; }
+.release-card code, .release-brief-footer code { color: var(--cyan); font: 700 .68rem ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
+.release-brief-footer { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid #2d4742; color: #93aaa2; font-size: .69rem; line-height: 1.45; }
+.release-brief-footer strong { color: var(--amber); }
+
 .control-deck,
 .keyboard-panel,
 .inspector-panel,
@@ -394,6 +416,7 @@ h2 { margin-bottom: 0; font-size: 1rem; font-weight: 680; line-height: 1.35; }
 .upload-boundary { margin: auto 0 0; padding-top: 15px; border-top: 1px solid #2a3937; color: #83938e; font-size: .66rem; line-height: 1.45; }
 
 @media (max-width: 1120px) {
+  .release-brief-grid { grid-template-columns: 1fr; }
   .workspace-grid { grid-template-columns: 1fr; }
   .scene-shell { min-height: 570px; }
   .inspector-panel { display: grid; grid-template-columns: 1fr 1fr; }
@@ -405,6 +428,9 @@ h2 { margin-bottom: 0; font-size: 1rem; font-weight: 680; line-height: 1.35; }
 @media (max-width: 720px) {
   .app-shell { padding: 22px 14px 34px; }
   .topbar, .control-deck, .panel-heading { align-items: flex-start; flex-direction: column; }
+  .release-brief { padding: 16px; }
+  .release-brief-heading { flex-direction: column; gap: 11px; }
+  .release-brief-intro { text-align: left; }
   .safety-badge { align-self: stretch; justify-content: center; }
   .layer-description { text-align: left; }
   .deck-actions { width: 100%; }

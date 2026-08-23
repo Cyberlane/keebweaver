@@ -41,9 +41,19 @@ struct KeySpec: Identifiable {
     let base: String
     let width: Double
     let overrides: [Layer: String]
+    let shiftedOverrides: [Layer: String]
 
     func label(for layer: Layer) -> String {
         overrides[layer] ?? base
+    }
+
+    func shiftedLabel(for layer: Layer) -> String? {
+        shiftedOverrides[layer]
+    }
+
+    func label(for layer: Layer, shiftHeld: Bool) -> String {
+        guard shiftHeld else { return label(for: layer) }
+        return shiftedLabel(for: layer) ?? label(for: layer)
     }
 
     func isOverride(for layer: Layer) -> Bool {
@@ -80,10 +90,10 @@ enum KeyboardLayout {
                 key("r0c5", "T", overrides: [.navigation: "Page\nUp"]),
             ],
             right: [
-                key("r0c11", "Y", overrides: [.numbers: "7", .symbols: "!"]),
-                key("r0c12", "U", overrides: [.numbers: "8", .symbols: "@"]),
-                key("r0c13", "I", overrides: [.numbers: "9", .symbols: "#"]),
-                key("r0c14", "O", overrides: [.numbers: "/", .symbols: "$"]),
+                key("r0c11", "Y", overrides: [.numbers: "7", .symbols: "!"], shifted: [.numbers: "&"]),
+                key("r0c12", "U", overrides: [.numbers: "8", .symbols: "@"], shifted: [.numbers: "*"]),
+                key("r0c13", "I", overrides: [.numbers: "9", .symbols: "#"], shifted: [.numbers: "("]),
+                key("r0c14", "O", overrides: [.numbers: "/", .symbols: "$"], shifted: [.numbers: "?"]),
                 key("r0c15", "P", overrides: [.numbers: "⌫", .symbols: "%"]),
                 key("r0c16", "⌫", width: 1.15, overrides: [.numbers: "⌦", .symbols: "⌫"]),
             ],
@@ -100,12 +110,12 @@ enum KeyboardLayout {
                 key("r1c5", "G", overrides: [.navigation: "Page\nDown"]),
             ],
             right: [
-                key("r1c11", "H", overrides: [.numbers: "4", .symbols: "("]),
-                key("r1c12", "J", overrides: [.numbers: "5", .symbols: ")"]),
-                key("r1c13", "K", overrides: [.numbers: "6", .symbols: "["]),
-                key("r1c14", "L", overrides: [.numbers: "*", .symbols: "]"]),
-                key("r1c15", ";", overrides: [.numbers: "Home", .symbols: "{"]),
-                key("r1c16", "'", overrides: [.numbers: "Page\nUp", .symbols: "}"]),
+                key("r1c11", "H", overrides: [.numbers: "4", .symbols: "("], shifted: [.numbers: "$"]),
+                key("r1c12", "J", overrides: [.numbers: "5", .symbols: ")"], shifted: [.numbers: "%"]),
+                key("r1c13", "K", overrides: [.numbers: "6", .symbols: "["], shifted: [.numbers: "^", .symbols: "{"]),
+                key("r1c14", "L", overrides: [.numbers: "*", .symbols: "]"], shifted: [.symbols: "}"]),
+                key("r1c15", ";", overrides: [.numbers: "Home", .symbols: "{"], shifted: [.base: ":"]),
+                key("r1c16", "'", overrides: [.numbers: "Page\nUp", .symbols: "}"], shifted: [.base: "\""]),
             ],
             pointer: .horizontal
         ),
@@ -120,12 +130,12 @@ enum KeyboardLayout {
                 key("r2c5", "B", overrides: [.navigation: "⌘⇧Z"]),
             ],
             right: [
-                key("r2c11", "N", overrides: [.numbers: "1", .symbols: "-"]),
-                key("r2c12", "M", overrides: [.numbers: "2", .symbols: "="]),
-                key("r2c13", ",", overrides: [.numbers: "3", .symbols: "_"]),
-                key("r2c14", ".", overrides: [.numbers: "-", .symbols: "+"]),
-                key("r2c15", "/", overrides: [.numbers: "End", .symbols: "\\"]),
-                key("r2c16", "Esc", width: 1.15, overrides: [.numbers: "Page\nDown", .symbols: "|"]),
+                key("r2c11", "N", overrides: [.numbers: "1", .symbols: "-"], shifted: [.numbers: "!", .symbols: "_"]),
+                key("r2c12", "M", overrides: [.numbers: "2", .symbols: "="], shifted: [.numbers: "@", .symbols: "+"]),
+                key("r2c13", ",", overrides: [.numbers: "3", .symbols: "<"], shifted: [.base: "<", .numbers: "#"]),
+                key("r2c14", ".", overrides: [.numbers: "-", .symbols: ">"], shifted: [.base: ">", .numbers: "_"]),
+                key("r2c15", "/", overrides: [.numbers: "End", .symbols: "\\"], shifted: [.base: "?", .symbols: "|"]),
+                key("r2c16", "Esc", width: 1.15, overrides: [.numbers: "Page\nDown", .symbols: "`"], shifted: [.symbols: "~"]),
             ],
             pointer: .down
         ),
@@ -139,7 +149,7 @@ enum KeyboardLayout {
 
     static let rightThumbs: [KeySpec] = [
         key("r3c11", "ENTER\nNAV", width: 1.5, overrides: [.numbers: "0", .symbols: "Enter"]),
-        key("r3c12", "—", width: 1.05, overrides: [.numbers: ".", .symbols: "'"]),
+        key("r3c12", "—", width: 1.05, overrides: [.numbers: ".", .symbols: "'"], shifted: [.symbols: "\""]),
         key("r3c13", "⌥", width: 1.05, overrides: [.numbers: "+", .symbols: "\""]),
     ]
 
@@ -155,8 +165,9 @@ enum KeyboardLayout {
         _ id: String,
         _ base: String,
         width: Double = 1,
-        overrides: [Layer: String] = [:]
+        overrides: [Layer: String] = [:],
+        shifted: [Layer: String] = [:]
     ) -> KeySpec {
-        KeySpec(id: id, base: base, width: width, overrides: overrides)
+        KeySpec(id: id, base: base, width: width, overrides: overrides, shiftedOverrides: shifted)
     }
 }

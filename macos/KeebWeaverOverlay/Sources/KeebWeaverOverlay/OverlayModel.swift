@@ -27,6 +27,12 @@ final class OverlayModel: ObservableObject {
         }
     }
 
+    @Published var shiftPreview: Bool {
+        didSet {
+            defaults.set(shiftPreview, forKey: "shiftPreview")
+        }
+    }
+
     @Published private(set) var detectedLayer: Layer?
     @Published private(set) var bluetoothStatus = "BLE: starting"
     @Published private(set) var bluetoothConnected = false
@@ -42,6 +48,7 @@ final class OverlayModel: ObservableObject {
         selectedLayer = Layer(rawValue: defaults.string(forKey: "selectedLayer") ?? "") ?? .base
         opacity = defaults.object(forKey: "opacity") as? Double ?? 0.94
         clickThrough = false
+        shiftPreview = defaults.object(forKey: "shiftPreview") as? Bool ?? false
         detectedLayer = nil
     }
 

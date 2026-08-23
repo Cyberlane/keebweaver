@@ -41,9 +41,11 @@ change firmware.
 checked-in beginner layout. It does not consume project files or typed input.
 Manual tabs are authoritative when the optional helper is absent. With the
 helper, CoreBluetooth can read versioned layer-state frames and write one
-bounded, volatile pointer-speed value. Keyboard name, UUID, characteristic
-properties, and BLE link encryption narrow the connection boundary but do not
-provide cryptographic application identity.
+bounded pointer-speed value. The firmware persists that value through ZMK
+settings with a short debounce, so it survives a reboot without a firmware
+reflash. Keyboard name, UUID, characteristic properties, and BLE link
+encryption narrow the connection boundary but do not provide cryptographic
+application identity.
 
 ## Firmware
 

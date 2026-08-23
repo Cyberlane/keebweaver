@@ -24,13 +24,6 @@
 
 / {
     behaviors {
-        td0: td0 {
-            compatible = "zmk,behavior-tap-dance";
-            display-name = "Shift/Caps Lock Tap Dance";
-            #binding-cells = <0>;
-            bindings = <&kp LEFT_SHIFT>, <&kp CAPS>;
-        };
-
         pointer_speed: pointer_speed {
             compatible = "keebweaver,behavior-pointer-speed";
             display-name = "Pointer Speed";
@@ -66,7 +59,7 @@
             display-name = "Base";
             bindings = <
 &kp TAB    &kp Q  &kp W      &kp E     &kp R  &kp T                         &mmv MOVE_UP                     &kp Y        &kp U  &kp I      &kp O    &kp P     &kp BSPC
-&td0       &kp A  &kp S      &kp D     &kp F  &kp G               &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &kp H        &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
+&mt LEFT_SHIFT CAPS  &kp A  &kp S      &kp D     &kp F  &kp G               &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &kp H        &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
 &kp LCTRL  &kp Z  &kp X      &kp C     &kp V  &kp B      &kp SPACE              &mmv MOVE_DOWN                   &kp N        &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp ESC
                              &kp LGUI  &mo 2  &lt 3 SPACE                                      &lt 1 ENTER  &none  &kp RALT
             >;
@@ -100,7 +93,7 @@
             bindings = <
 &trans  &trans  &trans  &trans  &trans  &trans                         &pointer_speed KEEBWEAVER_POINTER_SPEED_UP                     &kp EXCL  &kp AT  &kp HASH  &kp DLLR  &kp PRCNT  &kp BSPC
 &trans  &trans  &trans  &trans  &trans  &trans               &mmv MOVE_LEFT  &mkp LCLK  &mmv MOVE_RIGHT  &kp LPAR  &kp RPAR  &kp LBKT  &kp RBKT  &kp LBRC  &kp RBRC
-&trans  &trans  &trans  &trans  &trans  &trans  &pointer_speed KEEBWEAVER_POINTER_SPEED_DOWN                   &kp MINUS  &kp EQUAL  &kp UNDER  &kp PLUS  &kp BSLH  &kp PIPE
+&trans  &trans  &trans  &trans  &trans  &trans  &pointer_speed KEEBWEAVER_POINTER_SPEED_DOWN                   &kp MINUS  &kp EQUAL  &kp LESS_THAN  &kp GREATER_THAN  &kp BSLH  &kp GRAVE
                                      &trans  &trans  &trans                                     &kp RET  &kp SQT  &kp LS(SQT)
             >;
             sensor-bindings = <&scroll_encoder>;

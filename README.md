@@ -45,9 +45,11 @@ work function without a connected keyboard.
 For a native always-on-top learning aid on macOS, see the
 [macOS layout overlay](docs/OVERLAY.md). It is a separate local companion and
 does not flash, modify, or inspect typed input. With the optional BLE helper
-firmware, it reads layer state and can write only a bounded, volatile pointer
-speed value over an encrypted BLE link. The first OSS distribution is
-source-built and ad-hoc signed, not Developer ID signed or notarized.
+firmware, it reads layer state and can write only a bounded pointer-speed value
+over an encrypted BLE link. The firmware persists the value through ZMK
+settings after a short debounce, so changing it does not require reflashing.
+The first OSS distribution is source-built and ad-hoc signed, not Developer ID
+signed or notarized.
 
 Create an optimized static build with:
 
@@ -119,6 +121,11 @@ gh attestation verify keebweaver-ergokeeb-corne-left.uf2 \
   --repo Cyberlane/keebweaver
 gh release verify v0.2.0 --repo Cyberlane/keebweaver
 ```
+
+The current `v0.2.0` release candidate is described in the
+[release notes](docs/RELEASE_NOTES.md). They cover the persistent pointer-speed
+setting, the macOS Overlay's Shift preview for coding symbols, exact firmware
+targets, and the physical qualification still required before publication.
 
 ## Display artwork
 

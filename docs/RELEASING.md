@@ -7,7 +7,9 @@ built UF2 files to a release.
 ## Release gate
 
 1. Update `package.json` and `package-lock.json` to the intended version.
-2. Update release notes, the compatibility matrix, and any reset requirements.
+2. Update the [release notes](RELEASE_NOTES.md), compatibility matrix, and any
+   reset requirements. Make the Pages release brief agree with the same
+   boundaries.
 3. Run `npm ci`, `npm run check`, and `npm run build:firmware` from a clean
    checkout.
 4. Build and test the Overlay on macOS with
@@ -37,6 +39,15 @@ intact. The macOS Overlay remains source-only until a separate Developer ID,
 notarization, and update-channel policy is approved; do not attach the local
 ad-hoc-signed app bundle as a production binary.
 
+The `v0.2.0` candidate includes a persisted `keebweaver/pointer_speed` setting
+with a five-second debounce, the macOS Overlay's manual `Shift held` preview
+for coding symbols such as `<` and `>`, and exact side-specific
+`ergokeeb_corne_left` / `ergokeeb_corne_right` firmware. These are release
+behavior details, not a claim that generic Corne firmware is compatible. The
+release remains unpublishable until the owner-run physical BLE, pointer-speed
+persistence, and reconnect checks in the supported-hardware and flashing guides
+are recorded.
+
 ## Independent audit
 
 After publication, download the release assets into a clean directory, verify
@@ -48,4 +59,4 @@ deployment before announcing the release.
 
 | Release | Browser project envelope | Native Overlay | BLE helper | Firmware targets |
 | --- | --- | --- | --- | --- |
-| v0.2.0 | format v1 / intent schema v2 | source-only, macOS 13+ | frame v2; reads legacy v1; optional left-half service | `ergokeeb_corne_left`, `ergokeeb_corne_right`, exact left settings reset |
+| v0.2.0 | format v1 / intent schema v2 | source-only, macOS 13+, Shift preview | frame v2; reads legacy v1; optional left-half service; pointer speed persisted by firmware | `ergokeeb_corne_left`, `ergokeeb_corne_right`, exact left settings reset |

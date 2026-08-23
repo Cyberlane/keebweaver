@@ -9,12 +9,14 @@ const leftFirmwareConfig = readFileSync(new URL("../firmware/config/ergokeeb_cor
 const firmwareOverlay = readFileSync(new URL("../firmware/config/ergokeeb_corne.overlay", import.meta.url), "utf8");
 const displayKconfig = readFileSync(new URL("../firmware/modules/keebweaver_display/Kconfig", import.meta.url), "utf8");
 const displayFirmware = readFileSync(new URL("../firmware/modules/keebweaver_display/src/display_art.c", import.meta.url), "utf8");
+const pointerSpeedFirmware = readFileSync(new URL("../firmware/modules/keebweaver_display/src/pointer_speed.c", import.meta.url), "utf8");
 const layerStateFirmware = readFileSync(new URL("../firmware/modules/keebweaver_display/src/layer_state_ble.c", import.meta.url), "utf8");
 const pointerSpeedHeader = readFileSync(new URL("../firmware/modules/keebweaver_display/include/keebweaver/pointer_speed.h", import.meta.url), "utf8");
 const buildScript = readFileSync(new URL("../firmware/scripts/build.sh", import.meta.url), "utf8");
 const westManifest = readFileSync(new URL("../firmware/west.yml", import.meta.url), "utf8");
 
 test("firmware keeps the approved beginner thumb layout", () => {
+  assert.match(keymap, /&mt LEFT_SHIFT CAPS\s+&kp A/);
   assert.match(keymap, /&kp LGUI\s+&mo 2\s+&lt 3 SPACE\s+&lt 1 ENTER\s+&none\s+&kp RALT/);
   assert.match(keymap, /display-name = "Navigation"/);
   assert.match(keymap, /&kp LA\(LEFT\).*&kp LA\(RIGHT\).*&kp HOME.*&kp END.*&kp PG_UP/);
@@ -26,6 +28,7 @@ test("firmware maps a right-hand numpad and common symbols", () => {
   assert.match(keymap, /&kp N1\s+&kp N2\s+&kp N3\s+&kp MINUS/);
   assert.match(keymap, /&kp EXCL\s+&kp AT\s+&kp HASH\s+&kp DLLR\s+&kp PRCNT/);
   assert.match(keymap, /&kp LPAR\s+&kp RPAR\s+&kp LBKT\s+&kp RBKT\s+&kp LBRC\s+&kp RBRC/);
+  assert.match(keymap, /&kp MINUS\s+&kp EQUAL\s+&kp LESS_THAN\s+&kp GREATER_THAN\s+&kp BSLH\s+&kp GRAVE/);
 });
 
 test("firmware preserves the pointer cluster and adds Symbols speed controls", () => {
@@ -40,6 +43,11 @@ test("firmware preserves the pointer cluster and adds Symbols speed controls", (
   assert.match(pointerSpeedHeader, /KEEBWEAVER_POINTER_SPEED_MIN 300u/);
   assert.match(pointerSpeedHeader, /KEEBWEAVER_POINTER_SPEED_DEFAULT 1200u/);
   assert.match(pointerSpeedHeader, /KEEBWEAVER_POINTER_SPEED_MAX 2400u/);
+  assert.match(displayKconfig, /KEEBWEAVER_POINTER_SPEED_SAVE_DEBOUNCE_MS[\s\S]*default 5000/);
+  assert.match(pointerSpeedFirmware, /SETTINGS_STATIC_HANDLER_DEFINE\(keebweaver_pointer_speed, "keebweaver"/);
+  assert.match(pointerSpeedFirmware, /settings_save_one\(POINTER_SPEED_SETTINGS_KEY/);
+  assert.match(pointerSpeedFirmware, /CONFIG_KEEBWEAVER_POINTER_SPEED_SAVE_DEBOUNCE_MS/);
+  assert.doesNotMatch(displayKconfig, /intentionally volatile/);
 });
 
 test("firmware build matrix uses the documented ErgoKeeb targets", () => {

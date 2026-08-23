@@ -1,6 +1,7 @@
 /*
- * Runtime pointer-speed control shared by the input processor, key behavior,
- * and encrypted BLE control characteristic.
+ * Pointer-speed control shared by the input processor, key behavior, and
+ * encrypted BLE control characteristic. The current value is persisted by the
+ * implementation when the Zephyr settings subsystem is enabled.
  *
  * SPDX-License-Identifier: MIT
  */

@@ -50,7 +50,7 @@ const beginnerBase = {
   r3c4: "Numbers (hold)",
   r3c5: "Space / Symbols (hold)",
   r3c11: "Enter / Navigation (hold)",
-  r3c12: "Fn / Media (hold)",
+  r3c12: "Reserved",
 };
 
 const beginnerNavigation = proposalBindings({
@@ -69,7 +69,7 @@ const beginnerNumbers = proposalBindings({
 const beginnerSymbols = proposalBindings({
   r0c11: "!", r0c12: "@", r0c13: "#", r0c14: "$", r0c15: "%", r0c16: "Backspace",
   r1c11: "(", r1c12: ")", r1c13: "[", r1c14: "]", r1c15: "{", r1c16: "}",
-  r2c11: "-", r2c12: "=", r2c13: "_", r2c14: "+", r2c15: "\\", r2c16: "|",
+  r2c11: "-", r2c12: "=", r2c13: "<", r2c14: ">", r2c15: "\\", r2c16: "`",
   r3c11: "Enter", r3c12: "'", r3c13: "\"",
 });
 

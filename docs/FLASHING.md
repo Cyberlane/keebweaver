@@ -25,6 +25,9 @@ release notes do not require a settings reset:
    `keebweaver-ergokeeb-corne-right.uf2`.
 4. Reconnect normally and verify USB typing, the wireless split, both displays,
    all four layers, pointer movement/click, and existing Bluetooth operation.
+   The persisted pointer-speed setting is stored in ZMK settings and survives
+   normal power cycles; a settings-reset image clears it along with other
+   runtime settings.
 
 The optional Overlay BLE helper is compiled only into the exact normal left
 image. It is not present in the right or settings-reset image and does not

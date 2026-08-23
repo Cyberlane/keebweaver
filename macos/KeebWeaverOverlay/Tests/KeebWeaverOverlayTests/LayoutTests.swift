@@ -21,8 +21,23 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(KeyboardLayout.key(withID: "r0c15")?.label(for: .symbols), "%")
         XCTAssertEqual(KeyboardLayout.key(withID: "r1c11")?.label(for: .symbols), "(")
         XCTAssertEqual(KeyboardLayout.key(withID: "r1c12")?.label(for: .symbols), ")")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c11")?.label(for: .symbols), "-")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c12")?.label(for: .symbols), "=")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c13")?.label(for: .symbols), "<")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c14")?.label(for: .symbols), ">")
         XCTAssertEqual(KeyboardLayout.key(withID: "r2c15")?.label(for: .symbols), "\\")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c16")?.label(for: .symbols), "`")
         XCTAssertEqual(KeyboardLayout.key(withID: "r3c13")?.label(for: .symbols), "\"")
+    }
+
+    func testShiftPreviewShowsBaseAndSymbolPairs() {
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c13")?.shiftedLabel(for: .base), "<")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c14")?.label(for: .base, shiftHeld: true), ">")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r1c15")?.label(for: .base, shiftHeld: true), ":")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c11")?.label(for: .symbols, shiftHeld: true), "_")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c12")?.label(for: .symbols, shiftHeld: true), "+")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c15")?.label(for: .symbols, shiftHeld: true), "|")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r2c16")?.label(for: .symbols, shiftHeld: true), "~")
     }
 
     func testNumbersLayerMatchesTheRightHandNumpad() {
@@ -95,5 +110,9 @@ final class LayoutTests: XCTestCase {
         XCTAssertEqual(requested, UInt16(OverlayModel.pointerSpeedMinimum))
         model.requestPointerSpeed(9_999)
         XCTAssertEqual(requested, UInt16(OverlayModel.pointerSpeedMaximum))
+
+        XCTAssertFalse(model.shiftPreview)
+        model.shiftPreview = true
+        XCTAssertTrue(OverlayModel(defaults: defaults).shiftPreview)
     }
 }

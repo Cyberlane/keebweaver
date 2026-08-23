@@ -32,6 +32,34 @@
         </div>
       </header>
 
+      <section class="release-brief" aria-labelledby="release-brief-heading">
+        <div class="release-brief-heading">
+          <div>
+            <p class="section-label">v0.2.0 release candidate</p>
+            <h2 id="release-brief-heading">A concrete path from layout study to working keyboard</h2>
+          </div>
+          <p class="release-brief-intro">The browser studio is design-only; the exact firmware and native Overlay carry the runtime behavior.</p>
+        </div>
+        <div class="release-brief-grid">
+          <article class="release-card">
+            <p class="section-label">Firmware</p>
+            <h3>Pointer speed survives a reboot</h3>
+            <p>The bounded speed value is saved by the keyboard under <code>keebweaver/pointer_speed</code> after five seconds of settling. No firmware flash is needed for each adjustment.</p>
+          </article>
+          <article class="release-card">
+            <p class="section-label">macOS Overlay</p>
+            <h3>Shifted coding symbols are visible</h3>
+            <p>Use the <strong>Shift held</strong> preview to see pairs such as <code>,</code> → <code>&lt;</code>, <code>.</code> → <code>&gt;</code>, <code>-</code> → <code>_</code>, and <code>=</code> → <code>+</code>.</p>
+          </article>
+          <article class="release-card">
+            <p class="section-label">Release boundary</p>
+            <h3>Exact targets, auditable assets</h3>
+            <p>Release firmware is built by signed GitHub Actions for <code>ergokeeb_corne_left</code> and <code>ergokeeb_corne_right</code>. Generic Corne images are not compatible.</p>
+          </article>
+        </div>
+        <p class="release-brief-footer"><strong>Before publication:</strong> verify the checksums and attestations, complete physical BLE/persistence checks, and keep the settings-reset image for intentional recovery only.</p>
+      </section>
+
       <section class="control-deck" aria-label="Layer controls and project status">
         <div>
           <p class="section-label">macOS Beginner profile · captured reference shown in inspector</p>
