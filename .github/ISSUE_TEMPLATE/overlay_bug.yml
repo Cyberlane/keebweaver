@@ -1,5 +1,5 @@
-name: macOS Overlay bug
-description: Report a reproducible native Overlay or BLE-helper problem
+name: Desktop Overlay bug
+description: Report a reproducible macOS, Windows, Linux, or BLE-helper problem
 title: "overlay: "
 labels: [bug, overlay]
 body:
@@ -13,11 +13,24 @@ body:
       placeholder: v0.2.0 or commit SHA
     validations:
       required: true
-  - type: input
-    id: macos
+  - type: dropdown
+    id: distribution
     attributes:
-      label: macOS and Swift versions
-      placeholder: macOS 15.6; output of xcrun swift --version
+      label: Platform and distribution
+      description: Windows/Linux are source previews until target-OS runtime qualification; release ZIP and Homebrew apply only after their release gate is live.
+      options:
+        - macOS source build
+        - macOS signed release ZIP
+        - macOS Homebrew Cask
+        - Windows source preview
+        - Linux X11/XWayland source preview
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Operating system and toolchain
+      placeholder: macOS 15.6 and Swift 6; Windows 11 and .NET SDK; or Linux distribution, desktop/compositor, and .NET SDK
     validations:
       required: true
   - type: dropdown
@@ -28,6 +41,7 @@ body:
         - Manual layer tabs only
         - BLE automatic layer following
         - BLE pointer-speed control
+        - Window, tray, transparency, or click-through behavior
     validations:
       required: true
   - type: textarea
@@ -41,7 +55,7 @@ body:
     id: checks
     attributes:
       label: Safe verification details
-      placeholder: Swift test result, source build result, exact left target, and whether any firmware was written
+      placeholder: Source/release/Cask version, test or build result, exact left target, available desktop capabilities, and whether any firmware was written
     validations:
       required: true
   - type: checkboxes

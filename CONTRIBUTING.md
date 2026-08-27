@@ -33,9 +33,20 @@ npm run build:firmware
 Overlay changes must additionally pass:
 
 ```sh
-swift test --package-path macos/KeebWeaverOverlay
-bash macos/KeebWeaverOverlay/build-app.sh
+swift test --package-path overlay/macos/KeebWeaverOverlay
+bash overlay/macos/KeebWeaverOverlay/build-app.sh
+(
+  cd overlay/dotnet
+  dotnet restore KeebWeaverOverlay.slnx --locked-mode
+  dotnet build KeebWeaverOverlay.slnx --no-restore
+  dotnet test tests/KeebWeaver.Overlay.Core.Tests/KeebWeaver.Overlay.Core.Tests.csproj \
+    --no-build --no-restore
+)
 ```
+
+The .NET checks prove the shared contract/core and cross-platform compile
+boundary. They do not replace physical BLE and desktop-runtime qualification
+on Windows or Linux.
 
 Do not flash hardware merely to validate a pull request. Hardware installation
 and live qualification require an explicit device owner decision.

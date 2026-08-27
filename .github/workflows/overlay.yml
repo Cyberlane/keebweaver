@@ -13,7 +13,7 @@ jobs:
   overlay-ci:
     name: overlay-ci
     runs-on: macos-15
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -24,13 +24,43 @@ jobs:
       - name: Record Swift toolchain
         run: xcrun swift --version
       - name: Test Overlay package
-        run: swift test --package-path macos/KeebWeaverOverlay
-      - name: Build source-distribution app bundle
-        run: bash macos/KeebWeaverOverlay/build-app.sh
-      - name: Verify app metadata and ad-hoc development signature
-        run: |
-          app="macos/build/KeebWeaver Overlay.app"
-          plutil -lint "$app/Contents/Info.plist"
-          test "$(plutil -extract CFBundleShortVersionString raw "$app/Contents/Info.plist")" = "$(node -p 'require("./package.json").version')"
-          test "$(plutil -extract LSMinimumSystemVersion raw "$app/Contents/Info.plist")" = "13.0"
-          codesign --verify --deep --strict "$app"
+        run: swift test --package-path overlay/macos/KeebWeaverOverlay
+      - name: Build universal app bundle with an ad-hoc CI signature
+        env:
+          KEEBWEAVER_BUILD_ARCHS: arm64 x86_64
+          KEEBWEAVER_SIGNING_MODE: development
+        run: bash overlay/macos/KeebWeaverOverlay/build-app.sh
+      - name: Verify app metadata, architectures, and ad-hoc CI signature
+        run: >-
+          bash overlay/packaging/macos/verify-app.sh
+          "dist/overlay/macos/KeebWeaver Overlay.app"
+          development
+          "arm64 x86_64"
+
+  dotnet-overlay-ci:
+    name: dotnet-overlay-ci (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up the pinned .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: overlay/dotnet/global.json
+      - name: Restore the locked cross-platform dependency graph
+        working-directory: overlay/dotnet
+        run: dotnet restore KeebWeaverOverlay.slnx --locked-mode
+      - name: Compile every desktop shell
+        working-directory: overlay/dotnet
+        run: dotnet build KeebWeaverOverlay.slnx -c Release --no-restore
+      - name: Test the shared contract and core
+        working-directory: overlay/dotnet
+        run: >-
+          dotnet test
+          tests/KeebWeaver.Overlay.Core.Tests/KeebWeaver.Overlay.Core.Tests.csproj
+          -c Release --no-build --no-restore

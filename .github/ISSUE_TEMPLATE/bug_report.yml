@@ -10,14 +10,14 @@ body:
     id: version
     attributes:
       label: KeebWeaver version
-      placeholder: v0.1.0 or commit SHA
+      placeholder: v0.2.0 or commit SHA
     validations:
       required: true
   - type: input
     id: target
     attributes:
       label: Hardware target
-      placeholder: ergokeeb_corne_left/right, browser-only, or Overlay/macOS
+      placeholder: ergokeeb_corne_left/right, browser-only, or Overlay plus macOS/Windows/Linux
     validations:
       required: true
   - type: textarea

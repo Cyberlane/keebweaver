@@ -1,0 +1,34 @@
+{
+  "contractVersion": 1,
+  "validLayerStateFrames": [
+    { "name": "v1-base", "hex": "01000000", "version": 1, "highestLayerIndex": 0, "activeLayerMask": 0, "pointerSpeed": null },
+    { "name": "v1-navigation", "hex": "01010200", "version": 1, "highestLayerIndex": 1, "activeLayerMask": 2, "pointerSpeed": null },
+    { "name": "v1-symbols-with-navigation-held", "hex": "01030a00", "version": 1, "highestLayerIndex": 3, "activeLayerMask": 10, "pointerSpeed": null },
+    { "name": "v2-base-default-speed", "hex": "02000000b004", "version": 2, "highestLayerIndex": 0, "activeLayerMask": 0, "pointerSpeed": 1200 },
+    { "name": "v2-numbers-minimum-speed", "hex": "020204002c01", "version": 2, "highestLayerIndex": 2, "activeLayerMask": 4, "pointerSpeed": 300 },
+    { "name": "v2-symbols-maximum-speed", "hex": "020308006009", "version": 2, "highestLayerIndex": 3, "activeLayerMask": 8, "pointerSpeed": 2400 }
+  ],
+  "invalidLayerStateFrames": [
+    { "name": "empty", "hex": "", "reason": "empty-frame" },
+    { "name": "unknown-version", "hex": "03000000", "reason": "unknown-version" },
+    { "name": "v1-truncated", "hex": "010000", "reason": "wrong-length" },
+    { "name": "v1-trailing-byte", "hex": "0100000000", "reason": "wrong-length" },
+    { "name": "unknown-layer", "hex": "020400001004", "reason": "unknown-layer-index" },
+    { "name": "unknown-layer-mask-bit", "hex": "02001000b004", "reason": "unknown-layer-mask" },
+    { "name": "inconsistent-highest-layer", "hex": "02010400b004", "reason": "inconsistent-highest-layer" },
+    { "name": "speed-below-minimum", "hex": "020000002b01", "reason": "pointer-speed-out-of-range" },
+    { "name": "speed-above-maximum", "hex": "020000006109", "reason": "pointer-speed-out-of-range" }
+  ],
+  "validPointerSpeedValues": [
+    { "name": "minimum", "hex": "2c01", "value": 300 },
+    { "name": "default", "hex": "b004", "value": 1200 },
+    { "name": "maximum", "hex": "6009", "value": 2400 }
+  ],
+  "invalidPointerSpeedValues": [
+    { "name": "empty", "hex": "", "reason": "wrong-length" },
+    { "name": "one-byte", "hex": "2c", "reason": "wrong-length" },
+    { "name": "three-bytes", "hex": "2c0100", "reason": "wrong-length" },
+    { "name": "below-minimum", "hex": "2b01", "reason": "pointer-speed-out-of-range" },
+    { "name": "above-maximum", "hex": "6109", "reason": "pointer-speed-out-of-range" }
+  ]
+}

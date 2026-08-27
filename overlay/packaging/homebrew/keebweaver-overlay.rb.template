@@ -1,0 +1,18 @@
+cask "keebweaver-overlay" do
+  version "{{VERSION}}"
+  sha256 "{{SHA256}}"
+
+  url "https://github.com/Cyberlane/keebweaver/releases/download/v#{version}/keebweaver-overlay-macos-universal.zip"
+  name "KeebWeaver Overlay"
+  desc "Companion layer and pointer-state overlay for KeebWeaver keyboards"
+  homepage "https://github.com/Cyberlane/keebweaver"
+
+  depends_on macos: ">= :ventura"
+
+  app "KeebWeaver Overlay.app"
+
+  zap trash: [
+    "~/Library/Preferences/com.keebweaver.overlay.plist",
+    "~/Library/Saved Application State/com.keebweaver.overlay.savedState",
+  ]
+end

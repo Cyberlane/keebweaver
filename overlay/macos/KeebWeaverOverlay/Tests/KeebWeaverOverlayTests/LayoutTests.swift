@@ -41,6 +41,11 @@ final class LayoutTests: XCTestCase {
     }
 
     func testNumbersLayerMatchesTheRightHandNumpad() {
+        XCTAssertEqual(KeyboardLayout.key(withID: "r1c1")?.label(for: .numbers), "Host 1")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r1c2")?.label(for: .numbers), "Host 2")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r1c3")?.label(for: .numbers), "Host 3")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r1c4")?.label(for: .numbers), "Host 4")
+        XCTAssertEqual(KeyboardLayout.key(withID: "r1c5")?.label(for: .numbers), "Host 5")
         XCTAssertEqual(KeyboardLayout.key(withID: "r0c11")?.label(for: .numbers), "7")
         XCTAssertEqual(KeyboardLayout.key(withID: "r1c13")?.label(for: .numbers), "6")
         XCTAssertEqual(KeyboardLayout.key(withID: "r2c13")?.label(for: .numbers), "3")
@@ -75,6 +80,8 @@ final class LayoutTests: XCTestCase {
         XCTAssertNil(LayerStateFrame(data: Data([1, 3, 9])))
         XCTAssertNil(LayerStateFrame(data: Data([2, 3, 9, 0])))
         XCTAssertNil(LayerStateFrame(data: Data([1, 8, 9, 0]))?.layer)
+        XCTAssertNil(LayerStateFrame(data: Data([2, 0, 0x10, 0, 0xb0, 0x04])))
+        XCTAssertNil(LayerStateFrame(data: Data([2, 1, 0x04, 0, 0xb0, 0x04])))
         XCTAssertNil(LayerStateFrame(data: Data([2, 3, 9, 0, 1, 0])))
         XCTAssertNil(LayerStateFrame.decodePointerSpeed(Data([0xb0])))
         XCTAssertNil(LayerStateFrame.decodePointerSpeed(Data([0x61, 0x09])))

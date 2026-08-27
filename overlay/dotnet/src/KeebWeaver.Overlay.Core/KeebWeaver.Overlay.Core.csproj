@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <EmbeddedResource Include="../../../contract/v1/keebweaver-overlay.json"
+                      LogicalName="KeebWeaver.Overlay.Contract.v1.keebweaver-overlay.json" />
+  </ItemGroup>
+</Project>

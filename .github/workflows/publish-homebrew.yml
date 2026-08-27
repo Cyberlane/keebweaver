@@ -1,0 +1,173 @@
+name: Publish Homebrew Cask
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+concurrency:
+  group: publish-homebrew-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: verify release and update signed Homebrew tap commit
+    if: github.event.release.prerelease == false
+    runs-on: macos-15
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      attestations: read
+    steps:
+      - name: Check out the published signed tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.12.0
+      - name: Verify published release identity and signed tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test "${{ github.event.release.draft }}" = "false"
+          test "${{ github.event.release.prerelease }}" = "false"
+          test "$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft')" = "false"
+          test "$(gh release view "$RELEASE_TAG" --json isPrerelease --jq '.isPrerelease')" = "false"
+          tag_sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$tag_sha" --jq '.verification.verified')" = true
+          tag_commit=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/$tag_sha" --jq '.object.sha')
+          test "$tag_commit" = "$(git rev-parse HEAD)"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag_commit" --jq '.commit.verification.verified')" = true
+      - name: Download and independently verify every published asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          release_dir="$RUNNER_TEMP/keebweaver-release"
+          extracted_dir="$RUNNER_TEMP/keebweaver-overlay-extracted"
+          mkdir -p "$release_dir" "$extracted_dir"
+          gh release download "$RELEASE_TAG" --dir "$release_dir"
+          node overlay/packaging/verify-release-assets.mjs "$release_dir"
+          node overlay/packaging/macos/verify-manifest.mjs \
+            "$release_dir/keebweaver-overlay-macos-universal.zip" \
+            "$release_dir/keebweaver-overlay-macos-manifest.json"
+          node scripts/verify-uf2.mjs "$release_dir"/*.uf2
+          while IFS= read -r -d '' asset; do
+            gh attestation verify "$asset" --repo "$GITHUB_REPOSITORY"
+          done < <(find "$release_dir" -maxdepth 1 -type f -print0)
+
+          ditto -x -k "$release_dir/keebweaver-overlay-macos-universal.zip" "$extracted_dir"
+          test "$(find "$extracted_dir" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')" = "1"
+          bash overlay/packaging/macos/verify-app.sh \
+            "$extracted_dir/KeebWeaver Overlay.app" \
+            distribution \
+            "arm64 x86_64"
+      - name: Render the exact-version Homebrew Cask
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          release_dir="$RUNNER_TEMP/keebweaver-release"
+          version="${RELEASE_TAG#v}"
+          checksum="$(shasum -a 256 "$release_dir/keebweaver-overlay-macos-universal.zip" | awk '{print $1}')"
+          node overlay/packaging/homebrew/render-cask.mjs \
+            "$version" \
+            "$checksum" \
+            "$RUNNER_TEMP/keebweaver-overlay.rb"
+          ruby -c "$RUNNER_TEMP/keebweaver-overlay.rb"
+      - name: Check out the Homebrew tap with explicit cross-repository authority
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          : "${GH_TOKEN:?Missing HOMEBREW_TAP_TOKEN}"
+          gh repo clone Cyberlane/homebrew-tap "$RUNNER_TEMP/homebrew-tap" -- --depth=1
+          test "$(git -C "$RUNNER_TEMP/homebrew-tap" branch --show-current)" = "main"
+          mkdir -p "$RUNNER_TEMP/homebrew-tap/Casks"
+          cp "$RUNNER_TEMP/keebweaver-overlay.rb" "$RUNNER_TEMP/homebrew-tap/Casks/keebweaver-overlay.rb"
+      - name: Run strict online Cask audit and clean installation test
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_NO_ENV_HINTS: "1"
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          brew untap Cyberlane/tap >/dev/null 2>&1 || true
+          tap_url="file:"
+          tap_url+="//$RUNNER_TEMP/homebrew-tap"
+          brew tap Cyberlane/tap "$tap_url"
+          brew audit --cask --strict --online Cyberlane/tap/keebweaver-overlay
+          brew install --cask --require-sha Cyberlane/tap/keebweaver-overlay
+          installed_app="/Applications/KeebWeaver Overlay.app"
+          bash overlay/packaging/macos/verify-app.sh "$installed_app" distribution "arm64 x86_64"
+          test "$(plutil -extract CFBundleShortVersionString raw "$installed_app/Contents/Info.plist")" = "${RELEASE_TAG#v}"
+      - name: Remove the test installation
+        run: brew uninstall --cask keebweaver-overlay
+      - name: Create a GitHub-signed Cask update on the tap
+        id: tap-update
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          tap_dir="$RUNNER_TEMP/homebrew-tap"
+          cask_path="Casks/keebweaver-overlay.rb"
+          expected_head="$(git -C "$tap_dir" rev-parse HEAD)"
+          test "$expected_head" = "$(gh api repos/Cyberlane/homebrew-tap/commits/main --jq '.sha')"
+
+          if [[ -z "$(git -C "$tap_dir" status --porcelain -- "$cask_path")" ]]; then
+            commit_oid="$(gh api 'repos/Cyberlane/homebrew-tap/commits?sha=main&path=Casks/keebweaver-overlay.rb&per_page=1' --jq '.[0].sha')"
+            test -n "$commit_oid"
+          else
+            contents="$(base64 < "$tap_dir/$cask_path" | tr -d '\n')"
+            # shellcheck disable=SC2016
+            mutation='mutation($repository: String!, $branch: String!, $expectedHeadOid: GitObjectID!, $headline: String!, $path: String!, $contents: Base64String!) { createCommitOnBranch(input: { branch: { repositoryNameWithOwner: $repository, branchName: $branch }, expectedHeadOid: $expectedHeadOid, message: { headline: $headline }, fileChanges: { additions: [{ path: $path, contents: $contents }] } }) { commit { oid } } }'
+            commit_oid="$(gh api graphql \
+              -f query="$mutation" \
+              -f repository='Cyberlane/homebrew-tap' \
+              -f branch='main' \
+              -f expectedHeadOid="$expected_head" \
+              -f headline="build: release keebweaver-overlay ${RELEASE_TAG#v}" \
+              -f path="$cask_path" \
+              -f contents="$contents" \
+              --jq '.data.createCommitOnBranch.commit.oid')"
+          fi
+
+          test -n "$commit_oid"
+          echo "commit_oid=$commit_oid" >> "$GITHUB_OUTPUT"
+      - name: Read back the exact GitHub-verified tap commit
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          COMMIT_OID: ${{ steps.tap-update.outputs.commit_oid }}
+        run: |
+          verification=false
+          reason=unknown
+          for attempt in {1..10}; do
+            echo "Checking GitHub signature verification (attempt $attempt)."
+            verification="$(gh api "repos/Cyberlane/homebrew-tap/commits/$COMMIT_OID" --jq '.commit.verification.verified')"
+            reason="$(gh api "repos/Cyberlane/homebrew-tap/commits/$COMMIT_OID" --jq '.commit.verification.reason')"
+            if [[ "$verification" == "true" && "$reason" == "valid" ]]; then
+              break
+            fi
+            sleep 2
+          done
+          test "$verification" = "true"
+          test "$reason" = "valid"
+
+          gh api "repos/Cyberlane/homebrew-tap/contents/Casks/keebweaver-overlay.rb?ref=$COMMIT_OID" \
+            --jq '.content' | tr -d '\n' | base64 -D > "$RUNNER_TEMP/readback-cask.rb"
+          cmp "$RUNNER_TEMP/keebweaver-overlay.rb" "$RUNNER_TEMP/readback-cask.rb"
+          gh api 'repos/Cyberlane/homebrew-tap/contents/Casks/keebweaver-overlay.rb?ref=main' \
+            --jq '.content' | tr -d '\n' | base64 -D > "$RUNNER_TEMP/main-cask.rb"
+          cmp "$RUNNER_TEMP/keebweaver-overlay.rb" "$RUNNER_TEMP/main-cask.rb"
+
+          git -C "$RUNNER_TEMP/homebrew-tap" fetch origin main
+          git -C "$RUNNER_TEMP/homebrew-tap" merge-base --is-ancestor "$COMMIT_OID" origin/main
+          echo "Published verified tap commit $COMMIT_OID." >> "$GITHUB_STEP_SUMMARY"
+      - name: Clean up Homebrew test state
+        if: always()
+        run: |
+          brew uninstall --cask keebweaver-overlay >/dev/null 2>&1 || true
+          brew untap Cyberlane/tap >/dev/null 2>&1 || true

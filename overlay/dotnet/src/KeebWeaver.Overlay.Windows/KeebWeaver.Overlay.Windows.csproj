@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WindowsSdkPackageVersion>10.0.26100.87</WindowsSdkPackageVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>KeebWeaver.Overlay.Windows</AssemblyName>
+    <RootNamespace>KeebWeaver.Overlay.Windows</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../KeebWeaver.Overlay.Core/KeebWeaver.Overlay.Core.csproj" />
+    <ProjectReference Include="../KeebWeaver.Overlay.UI/KeebWeaver.Overlay.UI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" />
+  </ItemGroup>
+</Project>

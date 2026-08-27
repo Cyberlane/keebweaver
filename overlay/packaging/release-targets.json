@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "targets": [
+    {
+      "id": "firmware.ergokeeb-corne-left",
+      "platform": "firmware",
+      "status": "required",
+      "asset": "keebweaver-ergokeeb-corne-left.uf2"
+    },
+    {
+      "id": "firmware.ergokeeb-corne-right",
+      "platform": "firmware",
+      "status": "required",
+      "asset": "keebweaver-ergokeeb-corne-right.uf2"
+    },
+    {
+      "id": "firmware.ergokeeb-corne-settings-reset",
+      "platform": "firmware",
+      "status": "required",
+      "asset": "keebweaver-ergokeeb-corne-settings-reset.uf2"
+    },
+    {
+      "id": "overlay.macos",
+      "platform": "macos",
+      "status": "required",
+      "asset": "keebweaver-overlay-macos-universal.zip",
+      "architectures": [
+        "arm64",
+        "x86_64"
+      ]
+    },
+    {
+      "id": "overlay.windows",
+      "platform": "windows",
+      "status": "planned",
+      "assetTemplate": "keebweaver-overlay-windows-{architecture}.zip"
+    },
+    {
+      "id": "overlay.linux",
+      "platform": "linux",
+      "status": "planned",
+      "assetTemplate": "keebweaver-overlay-linux-{architecture}.tar.gz"
+    }
+  ],
+  "metadataAssets": [
+    {
+      "asset": "build-manifest.txt",
+      "generated": false
+    },
+    {
+      "asset": "keebweaver-web.spdx.json",
+      "generated": false
+    },
+    {
+      "asset": "keebweaver-firmware-dependencies.spdx.json",
+      "generated": false
+    },
+    {
+      "asset": "keebweaver-firmware-file-level-spdx.tar.gz",
+      "generated": false
+    },
+    {
+      "asset": "keebweaver-license-notices.txt",
+      "generated": false
+    },
+    {
+      "asset": "keebweaver-overlay-macos-manifest.json",
+      "generated": false
+    },
+    {
+      "asset": "keebweaver-release-targets.json",
+      "generated": true
+    },
+    {
+      "asset": "keebweaver-release-manifest.json",
+      "generated": true
+    },
+    {
+      "asset": "SHA256SUMS",
+      "generated": true,
+      "checksummed": false
+    }
+  ]
+}

@@ -9,4 +9,6 @@ uploads/
 *.kwar
 .DS_Store
 macos/build/
-macos/KeebWeaverOverlay/.build/
+overlay/macos/KeebWeaverOverlay/.build/
+overlay/dotnet/**/bin/
+overlay/dotnet/**/obj/

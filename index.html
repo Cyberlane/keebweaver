@@ -32,13 +32,63 @@
         </div>
       </header>
 
+      <section id="overlay-install" class="overlay-install" aria-labelledby="overlay-install-heading">
+        <div class="overlay-install-main">
+          <p class="section-label">Native Overlay · macOS 13+</p>
+          <h2 id="overlay-install-heading">Homebrew is the recommended next-release install</h2>
+          <p class="overlay-install-copy">
+            The macOS app is available from source now. This command becomes available only after the next
+            Developer ID-signed and notarized release is published and a clean live tap installation succeeds.
+            The current <code>v0.2.0</code> release does not bundle the app.
+          </p>
+          <div class="install-command" aria-label="Future Homebrew installation command">
+            <code id="homebrew-command">brew install --cask Cyberlane/tap/keebweaver-overlay</code>
+            <button
+              id="copy-homebrew-command"
+              class="copy-command-button"
+              type="button"
+              data-copy-text="brew install --cask Cyberlane/tap/keebweaver-overlay"
+              aria-describedby="homebrew-copy-status"
+            >Copy command</button>
+          </div>
+          <p id="homebrew-copy-status" class="install-status" role="status" aria-live="polite">
+            Pending signed/notarized release and live Homebrew tap verification.
+          </p>
+          <div class="install-links" aria-label="Overlay installation resources">
+            <a href="https://github.com/Cyberlane/keebweaver/blob/main/docs/OVERLAY.md">Install and verification guide</a>
+            <a href="https://github.com/Cyberlane/keebweaver/releases">GitHub Releases</a>
+          </div>
+          <p class="install-boundary">
+            The direct signed ZIP will live only on GitHub Releases; this Pages site does not host or mirror a binary.
+          </p>
+        </div>
+        <div class="platform-status" aria-labelledby="platform-status-heading">
+          <p class="section-label">Platform status</p>
+          <h3 id="platform-status-heading">One usable client, two qualification tracks</h3>
+          <dl>
+            <div>
+              <dt>macOS</dt>
+              <dd><span class="platform-dot is-current" aria-hidden="true"></span>Source app available now; signed distribution pending</dd>
+            </div>
+            <div>
+              <dt>Windows</dt>
+              <dd><span class="platform-dot" aria-hidden="true"></span>C#/Avalonia source preview; runtime qualification pending</dd>
+            </div>
+            <div>
+              <dt>Linux</dt>
+              <dd><span class="platform-dot" aria-hidden="true"></span>BlueZ + X11/XWayland preview; runtime qualification pending</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
       <section class="release-brief" aria-labelledby="release-brief-heading">
         <div class="release-brief-heading">
           <div>
-            <p class="section-label">v0.2.0 release candidate</p>
+            <p class="section-label">Published v0.2.0 · firmware assets</p>
             <h2 id="release-brief-heading">A concrete path from layout study to working keyboard</h2>
           </div>
-          <p class="release-brief-intro">The browser studio is design-only; the exact firmware and native Overlay carry the runtime behavior.</p>
+          <p class="release-brief-intro">The current release contains exact firmware and provenance assets. The native Overlay is source-built today and joins a later verified release.</p>
         </div>
         <div class="release-brief-grid">
           <article class="release-card">
@@ -57,7 +107,7 @@
             <p>Release firmware is built by signed GitHub Actions for <code>ergokeeb_corne_left</code> and <code>ergokeeb_corne_right</code>. Generic Corne images are not compatible.</p>
           </article>
         </div>
-        <p class="release-brief-footer"><strong>Before publication:</strong> verify the checksums and attestations, complete physical BLE/persistence checks, and keep the settings-reset image for intentional recovery only.</p>
+        <p class="release-brief-footer"><strong>Release boundary:</strong> v0.2.0 does not contain an Overlay ZIP. Keep automatic BLE following experimental until physical qualification is recorded, and reserve the settings-reset image for intentional recovery only.</p>
       </section>
 
       <section class="control-deck" aria-label="Layer controls and project status">

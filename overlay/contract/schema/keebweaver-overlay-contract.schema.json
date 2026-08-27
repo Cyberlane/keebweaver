@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cyberlane.github.io/keebweaver/contracts/keebweaver-overlay-contract.schema.json",
+  "title": "KeebWeaver overlay client contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "contractId",
+    "authority",
+    "device",
+    "layers",
+    "layout",
+    "bluetooth",
+    "layerStateFrames",
+    "pointerSpeed"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "contractVersion": { "const": 1 },
+    "contractId": { "const": "keebweaver-overlay-client-v1" },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "firmwareIsAuthoritative", "unknownRecords", "manualFallback"],
+      "properties": {
+        "scope": { "const": "overlay-client-only" },
+        "firmwareIsAuthoritative": { "const": true },
+        "unknownRecords": { "const": "reject" },
+        "manualFallback": { "const": true }
+      }
+    },
+    "device": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalogId", "expectedBluetoothName", "supportedSides", "layoutProfileId"],
+      "properties": {
+        "catalogId": { "type": "string", "minLength": 1 },
+        "expectedBluetoothName": { "type": "string", "minLength": 1 },
+        "supportedSides": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "layoutProfileId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/layer" }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rows", "leftThumbs", "rightThumbs", "neutralPlatformLabels", "pointerCluster"],
+      "properties": {
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/row" }
+        },
+        "leftThumbs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/key" }
+        },
+        "rightThumbs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/key" }
+        },
+        "neutralPlatformLabels": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/layerLabelMap"
+          }
+        },
+        "pointerCluster": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["up", "left", "click", "right", "down", "symbolsUpMeaning", "symbolsDownMeaning"],
+          "properties": {
+            "up": { "type": "string" },
+            "left": { "type": "string" },
+            "click": { "type": "string" },
+            "right": { "type": "string" },
+            "down": { "type": "string" },
+            "symbolsUpMeaning": { "type": "string" },
+            "symbolsDownMeaning": { "type": "string" }
+          }
+        }
+      }
+    },
+    "bluetooth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["serviceUuid", "layerStateCharacteristic", "pointerSpeedCharacteristic", "applicationIdentity"],
+      "properties": {
+        "serviceUuid": { "$ref": "#/$defs/uuid" },
+        "layerStateCharacteristic": { "$ref": "#/$defs/characteristic" },
+        "pointerSpeedCharacteristic": { "$ref": "#/$defs/characteristic" },
+        "applicationIdentity": { "const": "name-and-uuid-contract-only" }
+      }
+    },
+    "layerStateFrames": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/frame" }
+    },
+    "pointerSpeed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "maximum", "default", "step", "wireLength", "byteOrder", "outOfRangeRead", "outOfRangeRequest"],
+      "properties": {
+        "minimum": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "maximum": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "default": { "type": "integer", "minimum": 0, "maximum": 65535 },
+        "step": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "wireLength": { "const": 2 },
+        "byteOrder": { "const": "little-endian" },
+        "outOfRangeRead": { "const": "reject" },
+        "outOfRangeRequest": { "const": "reject" }
+      }
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "firmwareIndex", "title", "instruction"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "firmwareIndex": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "title": { "type": "string", "minLength": 1 },
+        "instruction": { "type": "string", "minLength": 1 }
+      }
+    },
+    "layerLabelMap": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": { "type": "string", "minLength": 1 }
+    },
+    "key": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "base", "width", "overrides", "shiftedOverrides"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^r[0-9]+c[0-9]+$" },
+        "base": { "type": "string", "minLength": 1 },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "overrides": { "$ref": "#/$defs/layerLabelMap" },
+        "shiftedOverrides": { "$ref": "#/$defs/layerLabelMap" }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "pointer", "left", "right"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "pointer": { "enum": ["up", "horizontal", "down"] },
+        "left": { "type": "array", "items": { "$ref": "#/$defs/key" } },
+        "right": { "type": "array", "items": { "$ref": "#/$defs/key" } }
+      }
+    },
+    "characteristic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uuid", "requiredProperties", "encrypted"],
+      "properties": {
+        "uuid": { "$ref": "#/$defs/uuid" },
+        "requiredProperties": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["read", "write", "notify"] }
+        },
+        "encrypted": { "type": "boolean" },
+        "optional": { "type": "boolean" }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "offset", "length"],
+      "properties": {
+        "name": { "enum": ["version", "highestLayerIndex", "activeLayerMask", "pointerSpeed"] },
+        "offset": { "type": "integer", "minimum": 0 },
+        "length": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "length", "byteOrder", "fields"],
+      "properties": {
+        "version": { "type": "integer", "minimum": 1, "maximum": 255 },
+        "length": { "type": "integer", "minimum": 1, "maximum": 255 },
+        "byteOrder": { "const": "little-endian" },
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/field" }
+        }
+      }
+    }
+  }
+}

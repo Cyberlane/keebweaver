@@ -103,11 +103,11 @@ enum KeyboardLayout {
             id: "home",
             left: [
                 key("r1c0", "⇧ /\nCaps", width: 1.35),
-                key("r1c1", "A", overrides: [.navigation: "←"]),
-                key("r1c2", "S", overrides: [.navigation: "↓"]),
-                key("r1c3", "D", overrides: [.navigation: "↑"]),
-                key("r1c4", "F", overrides: [.navigation: "→"]),
-                key("r1c5", "G", overrides: [.navigation: "Page\nDown"]),
+                key("r1c1", "A", overrides: [.navigation: "←", .numbers: "Host 1"]),
+                key("r1c2", "S", overrides: [.navigation: "↓", .numbers: "Host 2"]),
+                key("r1c3", "D", overrides: [.navigation: "↑", .numbers: "Host 3"]),
+                key("r1c4", "F", overrides: [.navigation: "→", .numbers: "Host 4"]),
+                key("r1c5", "G", overrides: [.navigation: "Page\nDown", .numbers: "Host 5"]),
             ],
             right: [
                 key("r1c11", "H", overrides: [.numbers: "4", .symbols: "("], shifted: [.numbers: "$"]),

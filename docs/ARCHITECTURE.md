@@ -35,17 +35,58 @@ contains non-runnable behavior labels, not compiled keycodes. Imported labels
 are rendered as text, and importing a project cannot access Web Serial or
 change firmware.
 
-## Native macOS Overlay
+## Desktop Overlay
 
-`macos/KeebWeaverOverlay` is a separate, source-built projection of the
-checked-in beginner layout. It does not consume project files or typed input.
-Manual tabs are authoritative when the optional helper is absent. With the
-helper, CoreBluetooth can read versioned layer-state frames and write one
-bounded pointer-speed value. The firmware persists that value through ZMK
+Overlay code is grouped by contract and platform so native integrations can
+evolve without turning one operating system's behavior into a universal rule:
+
+```text
+overlay/
+├── contract/v1/                # language-neutral schema and test vectors
+├── macos/KeebWeaverOverlay/    # SwiftUI/AppKit and CoreBluetooth
+└── dotnet/
+    ├── src/KeebWeaver.Overlay.Core/
+    ├── src/KeebWeaver.Overlay.UI/
+    ├── src/KeebWeaver.Overlay.Windows/
+    ├── src/KeebWeaver.Overlay.Linux/
+    └── tests/KeebWeaver.Overlay.Core.Tests/
+```
+
+The versioned contract owns layer identifiers, BLE UUIDs, frame shapes,
+pointer-speed bounds, layout records, and malformed/golden test vectors. Swift
+and C# consumers must both reject unknown or lossy records. The contract is an
+Overlay-facing mirror that is cross-checked against firmware; it does not
+generate firmware or silently change the checked-in keymap.
+
+The macOS projection remains native SwiftUI/AppKit and uses CoreBluetooth. The
+Windows and Linux clients share C#/Avalonia UI, parsing, and state. Their BLE
+boundaries remain platform-specific: WinRT GATT on Windows and BlueZ over the
+system D-Bus on Linux. Linux initially targets Avalonia's X11/XWayland backend;
+native Wayland support is experimental and not an initial support promise.
+Transparency, click-through, and tray behavior are capabilities that can be
+unavailable and must degrade visibly rather than being assumed.
+
+All clients keep manual tabs usable when the optional helper is absent. With
+the helper, a platform BLE adapter can read versioned layer-state frames and
+write one bounded pointer-speed value. Firmware persists that value through ZMK
 settings with a short debounce, so it survives a reboot without a firmware
 reflash. Keyboard name, UUID, characteristic properties, and BLE link
 encryption narrow the connection boundary but do not provide cryptographic
-application identity.
+application identity. The apps do not consume typed input or request global
+keyboard hooks.
+
+Source/build verification is distinct from runtime qualification. macOS is the
+current usable client; Windows and Linux release assets remain gated on
+physical-keyboard and target-desktop evidence.
+
+## Overlay distribution boundary
+
+Source builds are development artifacts. A distributable macOS ZIP must come
+from the signed tag workflow, pass Developer ID signing and Apple notarization,
+and be included in checksums and provenance attestations. The Homebrew Cask
+installs that exact immutable ZIP; it neither rebuilds the app nor modifies
+firmware, ZMK settings, Bluetooth bonds, or saved KeebWeaver projects. GitHub
+Pages links to GitHub Releases and never hosts a second binary copy.
 
 ## Firmware
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 import { execFileSync, spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { extname } from "node:path";
 
 const output = (args) => execFileSync("git", args, { encoding: "utf8" }).trim();
@@ -21,7 +21,10 @@ const privateTextPatterns = [
   { pattern: /\bAKIA[0-9A-Z]{16}\b/, label: "AWS access key" },
 ];
 
-const tracked = lines(output(["ls-files"]));
+// A directory move leaves deleted index entries visible to `git ls-files`
+// until the rename is staged. Audit the files present in the working tree;
+// the separate history pass below still covers every deleted path and blob.
+const tracked = lines(output(["ls-files"])).filter(existsSync);
 const untracked = lines(output(["ls-files", "--others", "--exclude-standard"]));
 const visible = [...new Set([...tracked, ...untracked])];
 for (const path of visible) {

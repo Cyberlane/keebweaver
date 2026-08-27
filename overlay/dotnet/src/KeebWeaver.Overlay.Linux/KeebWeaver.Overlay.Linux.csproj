@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>KeebWeaver.Overlay.Linux</AssemblyName>
+    <RootNamespace>KeebWeaver.Overlay.Linux</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../KeebWeaver.Overlay.Core/KeebWeaver.Overlay.Core.csproj" />
+    <ProjectReference Include="../KeebWeaver.Overlay.UI/KeebWeaver.Overlay.UI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Tmds.DBus.Protocol" />
+    <PackageReference Include="Tmds.DBus.Generator" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="dbus-xml/org.bluez.KeebWeaver.xml"
+                     Namespace="KeebWeaver.Overlay.Linux.BlueZ"
+                     DBusGeneratorMode="Proxy" />
+  </ItemGroup>
+</Project>

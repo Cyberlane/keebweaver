@@ -14,7 +14,8 @@ Corne firmware is **not** compatible with this target.
 - Renders an accessible 2D map and interactive Three.js model of the supported
   48-position source layout and 42 physical keys.
 - Ships a named **macOS Beginner** profile with Base, Navigation, Numbers, and
-  Symbols layers; it is a preset, not a hardware requirement.
+  Symbols layers; its Numbers layer includes five Bluetooth host selectors,
+  and the profile remains a preset rather than a hardware requirement.
 - Imports and exports deterministic, fail-closed `keebweaver-project` files.
 - Edits independent 68×160 portrait artwork for both nice!view displays.
 - Uploads validated artwork through a dedicated versioned Web Serial protocol
@@ -42,14 +43,28 @@ Open <http://localhost:4173>. Chrome or another Web Serial implementation is
 required only for direct artwork upload; design, validation, and project-file
 work function without a connected keyboard.
 
-For a native always-on-top learning aid on macOS, see the
-[macOS layout overlay](docs/OVERLAY.md). It is a separate local companion and
-does not flash, modify, or inspect typed input. With the optional BLE helper
-firmware, it reads layer state and can write only a bounded pointer-speed value
-over an encrypted BLE link. The firmware persists the value through ZMK
-settings after a short debounce, so changing it does not require reflashing.
-The first OSS distribution is source-built and ad-hoc signed, not Developer ID
-signed or notarized.
+For a native always-on-top learning aid, see the
+[desktop Overlay guide](docs/OVERLAY.md). The macOS app is available from source
+today. It is a separate local companion and does not flash firmware, change
+Bluetooth bonds, or inspect typed input. With the optional BLE helper firmware,
+it reads layer state and can write only a bounded pointer-speed value over an
+encrypted BLE link. The firmware persists that value after a short debounce,
+so changing it does not require reflashing.
+
+Homebrew will be the recommended macOS installation after the next release has
+published the Developer ID-signed and notarized app, the release asset has been
+independently verified, and the Cask has passed a live tap installation:
+
+```sh
+brew install --cask Cyberlane/tap/keebweaver-overlay
+```
+
+That gate has not passed yet, and the published `v0.2.0` release does not
+contain the Overlay. Until the release and tap are both verified, build the app
+from source using the guide instead of treating the command above as available.
+Windows and Linux clients are structured around a shared C#/Avalonia core, but
+remain source previews pending physical Bluetooth and desktop-integration
+qualification; no Windows or Linux release asset is currently offered.
 
 Create an optimized static build with:
 
@@ -122,10 +137,10 @@ gh attestation verify keebweaver-ergokeeb-corne-left.uf2 \
 gh release verify v0.2.0 --repo Cyberlane/keebweaver
 ```
 
-The current `v0.2.0` release candidate is described in the
-[release notes](docs/RELEASE_NOTES.md). They cover the persistent pointer-speed
-setting, the macOS Overlay's Shift preview for coding symbols, exact firmware
-targets, and the physical qualification still required before publication.
+The published `v0.2.0` firmware release and the unreleased Overlay distribution
+work are separated in the [release notes](docs/RELEASE_NOTES.md). The current
+release has exact firmware and provenance assets only; it does not contain a
+desktop app or establish Windows/Linux runtime support.
 
 ## Display artwork
 

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/KeebWeaver.Overlay.Core/KeebWeaver.Overlay.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3.mtp-v2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="../../../contract/v1/keebweaver-overlay.json"
+             Link="contract/keebweaver-overlay.json"
+             CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../../../contract/v1/layer-state-vectors.json"
+             Link="contract/layer-state-vectors.json"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

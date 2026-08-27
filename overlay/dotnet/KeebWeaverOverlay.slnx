@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/KeebWeaver.Overlay.Core/KeebWeaver.Overlay.Core.csproj" />
+  <Project Path="src/KeebWeaver.Overlay.UI/KeebWeaver.Overlay.UI.csproj" />
+  <Project Path="src/KeebWeaver.Overlay.Windows/KeebWeaver.Overlay.Windows.csproj" />
+  <Project Path="src/KeebWeaver.Overlay.Linux/KeebWeaver.Overlay.Linux.csproj" />
+  <Project Path="tests/KeebWeaver.Overlay.Core.Tests/KeebWeaver.Overlay.Core.Tests.csproj" />
+</Solution>

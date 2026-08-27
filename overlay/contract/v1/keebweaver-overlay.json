@@ -1,0 +1,188 @@
+{
+  "$schema": "../schema/keebweaver-overlay-contract.schema.json",
+  "contractVersion": 1,
+  "contractId": "keebweaver-overlay-client-v1",
+  "authority": {
+    "scope": "overlay-client-only",
+    "firmwareIsAuthoritative": true,
+    "unknownRecords": "reject",
+    "manualFallback": true
+  },
+  "device": {
+    "catalogId": "ergokeeb-corne-eyelash",
+    "expectedBluetoothName": "ErgoKeeb Corne",
+    "supportedSides": [
+      "ergokeeb_corne_left",
+      "ergokeeb_corne_right"
+    ],
+    "layoutProfileId": "macos-beginner-v1"
+  },
+  "layers": [
+    {
+      "id": "base",
+      "firmwareIndex": 0,
+      "title": "Base",
+      "instruction": "Normal typing layer"
+    },
+    {
+      "id": "navigation",
+      "firmwareIndex": 1,
+      "title": "Navigation",
+      "instruction": "Hold the Enter / Nav thumb key"
+    },
+    {
+      "id": "numbers",
+      "firmwareIndex": 2,
+      "title": "Numbers",
+      "instruction": "Hold the Num thumb key"
+    },
+    {
+      "id": "symbols",
+      "firmwareIndex": 3,
+      "title": "Symbols",
+      "instruction": "Hold the Space / Sym thumb key"
+    }
+  ],
+  "layout": {
+    "rows": [
+      {
+        "id": "top",
+        "pointer": "up",
+        "left": [
+          { "id": "r0c0", "base": "Tab", "width": 1.15, "overrides": {}, "shiftedOverrides": {} },
+          { "id": "r0c1", "base": "Q", "width": 1.0, "overrides": { "navigation": "Word\n←" }, "shiftedOverrides": {} },
+          { "id": "r0c2", "base": "W", "width": 1.0, "overrides": { "navigation": "Word\n→" }, "shiftedOverrides": {} },
+          { "id": "r0c3", "base": "E", "width": 1.0, "overrides": { "navigation": "Home" }, "shiftedOverrides": {} },
+          { "id": "r0c4", "base": "R", "width": 1.0, "overrides": { "navigation": "End" }, "shiftedOverrides": {} },
+          { "id": "r0c5", "base": "T", "width": 1.0, "overrides": { "navigation": "Page\nUp" }, "shiftedOverrides": {} }
+        ],
+        "right": [
+          { "id": "r0c11", "base": "Y", "width": 1.0, "overrides": { "numbers": "7", "symbols": "!" }, "shiftedOverrides": { "numbers": "&" } },
+          { "id": "r0c12", "base": "U", "width": 1.0, "overrides": { "numbers": "8", "symbols": "@" }, "shiftedOverrides": { "numbers": "*" } },
+          { "id": "r0c13", "base": "I", "width": 1.0, "overrides": { "numbers": "9", "symbols": "#" }, "shiftedOverrides": { "numbers": "(" } },
+          { "id": "r0c14", "base": "O", "width": 1.0, "overrides": { "numbers": "/", "symbols": "$" }, "shiftedOverrides": { "numbers": "?" } },
+          { "id": "r0c15", "base": "P", "width": 1.0, "overrides": { "numbers": "⌫", "symbols": "%" }, "shiftedOverrides": {} },
+          { "id": "r0c16", "base": "⌫", "width": 1.15, "overrides": { "numbers": "⌦", "symbols": "⌫" }, "shiftedOverrides": {} }
+        ]
+      },
+      {
+        "id": "home",
+        "pointer": "horizontal",
+        "left": [
+          { "id": "r1c0", "base": "⇧ /\nCaps", "width": 1.35, "overrides": {}, "shiftedOverrides": {} },
+          { "id": "r1c1", "base": "A", "width": 1.0, "overrides": { "navigation": "←", "numbers": "Host 1" }, "shiftedOverrides": {} },
+          { "id": "r1c2", "base": "S", "width": 1.0, "overrides": { "navigation": "↓", "numbers": "Host 2" }, "shiftedOverrides": {} },
+          { "id": "r1c3", "base": "D", "width": 1.0, "overrides": { "navigation": "↑", "numbers": "Host 3" }, "shiftedOverrides": {} },
+          { "id": "r1c4", "base": "F", "width": 1.0, "overrides": { "navigation": "→", "numbers": "Host 4" }, "shiftedOverrides": {} },
+          { "id": "r1c5", "base": "G", "width": 1.0, "overrides": { "navigation": "Page\nDown", "numbers": "Host 5" }, "shiftedOverrides": {} }
+        ],
+        "right": [
+          { "id": "r1c11", "base": "H", "width": 1.0, "overrides": { "numbers": "4", "symbols": "(" }, "shiftedOverrides": { "numbers": "$" } },
+          { "id": "r1c12", "base": "J", "width": 1.0, "overrides": { "numbers": "5", "symbols": ")" }, "shiftedOverrides": { "numbers": "%" } },
+          { "id": "r1c13", "base": "K", "width": 1.0, "overrides": { "numbers": "6", "symbols": "[" }, "shiftedOverrides": { "numbers": "^", "symbols": "{" } },
+          { "id": "r1c14", "base": "L", "width": 1.0, "overrides": { "numbers": "*", "symbols": "]" }, "shiftedOverrides": { "symbols": "}" } },
+          { "id": "r1c15", "base": ";", "width": 1.0, "overrides": { "numbers": "Home", "symbols": "{" }, "shiftedOverrides": { "base": ":" } },
+          { "id": "r1c16", "base": "'", "width": 1.0, "overrides": { "numbers": "Page\nUp", "symbols": "}" }, "shiftedOverrides": { "base": "\"" } }
+        ]
+      },
+      {
+        "id": "bottom",
+        "pointer": "down",
+        "left": [
+          { "id": "r2c0", "base": "Ctrl", "width": 1.15, "overrides": {}, "shiftedOverrides": {} },
+          { "id": "r2c1", "base": "Z", "width": 1.0, "overrides": { "navigation": "⌘Z" }, "shiftedOverrides": {} },
+          { "id": "r2c2", "base": "X", "width": 1.0, "overrides": { "navigation": "⌘X" }, "shiftedOverrides": {} },
+          { "id": "r2c3", "base": "C", "width": 1.0, "overrides": { "navigation": "⌘C" }, "shiftedOverrides": {} },
+          { "id": "r2c4", "base": "V", "width": 1.0, "overrides": { "navigation": "⌘V" }, "shiftedOverrides": {} },
+          { "id": "r2c5", "base": "B", "width": 1.0, "overrides": { "navigation": "⌘⇧Z" }, "shiftedOverrides": {} }
+        ],
+        "right": [
+          { "id": "r2c11", "base": "N", "width": 1.0, "overrides": { "numbers": "1", "symbols": "-" }, "shiftedOverrides": { "numbers": "!", "symbols": "_" } },
+          { "id": "r2c12", "base": "M", "width": 1.0, "overrides": { "numbers": "2", "symbols": "=" }, "shiftedOverrides": { "numbers": "@", "symbols": "+" } },
+          { "id": "r2c13", "base": ",", "width": 1.0, "overrides": { "numbers": "3", "symbols": "<" }, "shiftedOverrides": { "base": "<", "numbers": "#" } },
+          { "id": "r2c14", "base": ".", "width": 1.0, "overrides": { "numbers": "-", "symbols": ">" }, "shiftedOverrides": { "base": ">", "numbers": "_" } },
+          { "id": "r2c15", "base": "/", "width": 1.0, "overrides": { "numbers": "End", "symbols": "\\" }, "shiftedOverrides": { "base": "?", "symbols": "|" } },
+          { "id": "r2c16", "base": "Esc", "width": 1.15, "overrides": { "numbers": "Page\nDown", "symbols": "`" }, "shiftedOverrides": { "symbols": "~" } }
+        ]
+      }
+    ],
+    "leftThumbs": [
+      { "id": "r3c3", "base": "⌘", "width": 1.05, "overrides": {}, "shiftedOverrides": {} },
+      { "id": "r3c4", "base": "NUM\nhold", "width": 1.25, "overrides": {}, "shiftedOverrides": {} },
+      { "id": "r3c5", "base": "SYM\nSpace", "width": 1.5, "overrides": {}, "shiftedOverrides": {} }
+    ],
+    "rightThumbs": [
+      { "id": "r3c11", "base": "ENTER\nNAV", "width": 1.5, "overrides": { "numbers": "0", "symbols": "Enter" }, "shiftedOverrides": {} },
+      { "id": "r3c12", "base": "—", "width": 1.05, "overrides": { "numbers": ".", "symbols": "'" }, "shiftedOverrides": { "symbols": "\"" } },
+      { "id": "r3c13", "base": "⌥", "width": 1.05, "overrides": { "numbers": "+", "symbols": "\"" }, "shiftedOverrides": {} }
+    ],
+    "neutralPlatformLabels": {
+      "r0c1": { "navigation": "LALT+←" },
+      "r0c2": { "navigation": "LALT+→" },
+      "r2c1": { "navigation": "LGUI+Z" },
+      "r2c2": { "navigation": "LGUI+X" },
+      "r2c3": { "navigation": "LGUI+C" },
+      "r2c4": { "navigation": "LGUI+V" },
+      "r2c5": { "navigation": "LGUI+LSHIFT+Z" },
+      "r3c3": { "base": "LGUI" },
+      "r3c13": { "base": "RALT" }
+    },
+    "pointerCluster": {
+      "up": "↑",
+      "left": "←",
+      "click": "●",
+      "right": "→",
+      "down": "↓",
+      "symbolsUpMeaning": "Increase pointer speed",
+      "symbolsDownMeaning": "Decrease pointer speed"
+    }
+  },
+  "bluetooth": {
+    "serviceUuid": "8f4b0001-2a0e-4f6e-9a1c-3d7b56c4e201",
+    "layerStateCharacteristic": {
+      "uuid": "8f4b0002-2a0e-4f6e-9a1c-3d7b56c4e201",
+      "requiredProperties": ["read", "notify"],
+      "encrypted": true
+    },
+    "pointerSpeedCharacteristic": {
+      "uuid": "8f4b0003-2a0e-4f6e-9a1c-3d7b56c4e201",
+      "requiredProperties": ["read", "write"],
+      "encrypted": true,
+      "optional": true
+    },
+    "applicationIdentity": "name-and-uuid-contract-only"
+  },
+  "layerStateFrames": [
+    {
+      "version": 1,
+      "length": 4,
+      "byteOrder": "little-endian",
+      "fields": [
+        { "name": "version", "offset": 0, "length": 1 },
+        { "name": "highestLayerIndex", "offset": 1, "length": 1 },
+        { "name": "activeLayerMask", "offset": 2, "length": 2 }
+      ]
+    },
+    {
+      "version": 2,
+      "length": 6,
+      "byteOrder": "little-endian",
+      "fields": [
+        { "name": "version", "offset": 0, "length": 1 },
+        { "name": "highestLayerIndex", "offset": 1, "length": 1 },
+        { "name": "activeLayerMask", "offset": 2, "length": 2 },
+        { "name": "pointerSpeed", "offset": 4, "length": 2 }
+      ]
+    }
+  ],
+  "pointerSpeed": {
+    "minimum": 300,
+    "maximum": 2400,
+    "default": 1200,
+    "step": 100,
+    "wireLength": 2,
+    "byteOrder": "little-endian",
+    "outOfRangeRead": "reject",
+    "outOfRangeRequest": "reject"
+  }
+}

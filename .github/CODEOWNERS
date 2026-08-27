@@ -1,7 +1,7 @@
 # Sensitive build, release, and hardware boundaries require maintainer review.
 /.github/workflows/ @Cyberlane
 /.github/CODEOWNERS @Cyberlane
-/macos/ @Cyberlane
+/overlay/ @Cyberlane
 /firmware/ @Cyberlane
 /docs/ @Cyberlane
 /LICENSES/ @Cyberlane

@@ -11,9 +11,20 @@ can read and write only the bounded pointer-speed value. The firmware persists
 that value in ZMK settings after a short debounce, so it survives normal
 power cycles without another firmware flash.
 
-The initial OSS release is source-only. The local build script applies an
-ad-hoc development signature; it does not produce a Developer ID-signed or
-Apple-notarized distribution.
+The published `v0.2.0` release is source-only for the Overlay. The next release
+is intended to add a universal Developer ID-signed and Apple-notarized ZIP, then
+make that exact artifact available through Homebrew after live tap
+verification. Checked-in release configuration is not proof that either path
+is available.
+
+Once that release and tap gate passes, the recommended installation command is:
+
+```sh
+brew install --cask Cyberlane/tap/keebweaver-overlay
+```
+
+Until then, use the source build below. The local build script applies an
+ad-hoc development signature and does not produce a distributable app.
 
 ## Build and launch
 
@@ -21,8 +32,9 @@ Requires macOS 13 or newer, Swift 6, and Node.js 22.12 or newer. From the
 repository root:
 
 ```sh
-bash macos/KeebWeaverOverlay/build-app.sh
-open "macos/build/KeebWeaver Overlay.app"
+swift test --package-path overlay/macos/KeebWeaverOverlay
+bash overlay/macos/KeebWeaverOverlay/build-app.sh
+open "dist/overlay/macos/KeebWeaver Overlay.app"
 ```
 
 The keyboard icon in the macOS menu bar provides Show, Hide, Pass-through, and
@@ -72,3 +84,6 @@ security or authentication display.
 The app never changes bonds, key bindings, or firmware. Pointer-speed writes
 change the keyboard's runtime setting through the helper; persistence is owned
 by the firmware rather than by a separate macOS preference.
+
+For installation, update/uninstall, direct-download verification, and current
+Windows/Linux status, see [`docs/OVERLAY.md`](../../../docs/OVERLAY.md).

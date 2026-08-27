@@ -5,7 +5,7 @@
 - Reproducing a tagged build on the documented target.
 - KeebWeaver project import/export and validation.
 - Display-art editing and the KeebWeaver artwork protocol.
-- Building and using the source-distributed macOS Overlay in manual mode.
+- Installing, building, and using the macOS Overlay in manual mode.
 - Bugs in the bundled macOS Beginner profile.
 - Adding a new device through the catalog with adequate public evidence and
   tests.
@@ -18,8 +18,11 @@
 - Recovery images, vendor support, soldering, battery repair, or bootloader
   replacement.
 - Automatic flashing or remote device operation.
-- Developer ID signing, notarization, automatic updates, or prebuilt Overlay
-  distribution in the initial OSS release.
+- Treating the published `v0.2.0` firmware release as if it contained a
+  Developer ID-signed, notarized, or Homebrew-distributed Overlay.
+- Windows or Linux runtime-support claims before physical BLE and target
+  desktop qualification are recorded; source-preview bug reports remain
+  welcome.
 
 The Overlay BLE helper is experimental until owner-run hardware qualification
 is recorded. Reports about its exact left-half service are welcome, but a

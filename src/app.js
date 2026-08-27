@@ -52,6 +52,9 @@ const artConnectionStatus = document.querySelector("#art-connection-status");
 const artUploadButton = document.querySelector("#art-upload-button");
 const artDisconnectButton = document.querySelector("#art-disconnect-button");
 const artUploadProgress = document.querySelector("#art-upload-progress");
+const homebrewCopyButton = document.querySelector("#copy-homebrew-command");
+const homebrewCommand = document.querySelector("#homebrew-command");
+const homebrewCopyStatus = document.querySelector("#homebrew-copy-status");
 
 const DEVICE_DEFINITION = DEFAULT_DEVICE.definition;
 const RUNTIME_BASELINE = DEFAULT_DEVICE.runtimeBaseline;
@@ -328,6 +331,48 @@ function render() {
   renderPresentation();
   renderArtworkStudio();
 }
+
+function copyWithSelectionFallback(value) {
+  const copyTarget = document.createElement("textarea");
+  copyTarget.value = value;
+  copyTarget.readOnly = true;
+  copyTarget.style.position = "fixed";
+  copyTarget.style.opacity = "0";
+  document.body.append(copyTarget);
+  copyTarget.select();
+  const copied = document.execCommand("copy");
+  copyTarget.remove();
+  return copied;
+}
+
+homebrewCopyButton.addEventListener("click", async () => {
+  const command = homebrewCopyButton.dataset.copyText || homebrewCommand.textContent.trim();
+  let copied = false;
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(command);
+      copied = true;
+    }
+  } catch {
+    // The selection fallback below covers denied or unavailable Clipboard API access.
+  }
+
+  if (!copied) {
+    try {
+      copied = copyWithSelectionFallback(command);
+    } catch {
+      copied = false;
+    }
+  }
+
+  homebrewCopyStatus.classList.toggle("is-copied", copied);
+  homebrewCopyStatus.classList.toggle("is-error", !copied);
+  homebrewCopyStatus.textContent = copied
+    ? "Command copied. Release and live tap availability are still pending."
+    : "Copy is unavailable here. Select the command text and copy it manually.";
+  homebrewCopyButton.focus();
+});
 
 document.querySelector("#validate-button").addEventListener("click", renderValidation);
 document.querySelector("#serialization-button").addEventListener("click", () => {
