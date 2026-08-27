@@ -5,8 +5,8 @@ Releases are built by GitHub Actions from a GitHub-verified signed
 local ad-hoc-signed app bundles are never release assets.
 
 The published `v0.2.0` release contains firmware and provenance only. The
-macOS app ZIP and Homebrew Cask described below belong to the next release;
-their checked-in automation must not be reported as live delivery.
+macOS app ZIP and Homebrew Cask described below belong to the `v0.3.0` release
+candidate; their checked-in automation must not be reported as live delivery.
 
 ## Release gate
 
@@ -174,4 +174,4 @@ or shared-core test is not that evidence.
 | Release state | Browser project envelope | Desktop Overlay | BLE helper | Firmware targets |
 | --- | --- | --- | --- | --- |
 | v0.2.0, published | format v1 / intent schema v2 | macOS source build only; no bundled app or Cask | frame v2; reads legacy v1; optional left-half service; physical OSS qualification not recorded | `ergokeeb_corne_left`, `ergokeeb_corne_right`, exact left settings reset |
-| Next release, unreleased | unchanged unless release notes say otherwise | signed/notarized universal macOS ZIP and Homebrew after verification; Windows/Linux source previews pending qualification | shared contract with platform-specific adapters; no implied target-OS proof | exact custom targets only; never generic Corne |
+| v0.3.0, release candidate | unchanged unless release notes say otherwise | signed/notarized universal macOS ZIP and Homebrew after verification; Windows/Linux source previews pending qualification | shared contract with platform-specific adapters; no implied target-OS proof | exact custom targets only; never generic Corne |

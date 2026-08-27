@@ -15,7 +15,7 @@ test("firmware dependency SBOM records the pinned build closure", () => {
   const sbom = JSON.parse(output);
 
   assert.equal(sbom.spdxVersion, "SPDX-2.3");
-  assert.equal(sbom.packages[0].versionInfo, "0.2.0");
+  assert.equal(sbom.packages[0].versionInfo, "0.3.0");
   assert.match(sbom.packages[0].downloadLocation, new RegExp(`${commit}$`));
   assert.deepEqual(sbom.packages.slice(1, 4).map((entry) => entry.licenseDeclared), ["MIT", "MIT", "Apache-2.0"]);
   assert.match(sbom.packages.at(-1).comment, /sha256:[a-f0-9]{64}/);

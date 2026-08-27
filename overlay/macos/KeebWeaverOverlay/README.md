@@ -11,11 +11,11 @@ can read and write only the bounded pointer-speed value. The firmware persists
 that value in ZMK settings after a short debounce, so it survives normal
 power cycles without another firmware flash.
 
-The published `v0.2.0` release is source-only for the Overlay. The next release
-is intended to add a universal Developer ID-signed and Apple-notarized ZIP, then
-make that exact artifact available through Homebrew after live tap
-verification. Checked-in release configuration is not proof that either path
-is available.
+The published `v0.2.0` release is source-only for the Overlay. The `v0.3.0`
+release candidate is intended to add a universal Developer ID-signed and
+Apple-notarized ZIP, then make that exact artifact available through Homebrew
+after live tap verification. Checked-in release configuration is not proof
+that either path is available.
 
 Once that release and tap gate passes, the recommended installation command is:
 

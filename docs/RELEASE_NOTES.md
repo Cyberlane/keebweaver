@@ -1,11 +1,11 @@
 # Release notes
 
-## Unreleased — desktop Overlay distribution
+## v0.3.0 — release candidate 2026-08-28
 
-This work is checked in for the release following `v0.2.0`; it is not evidence
-that a new release, Homebrew Cask, or Windows/Linux package is live.
+This candidate prepares the release following `v0.2.0`; it is not evidence
+that `v0.3.0`, the Homebrew Cask, or a Windows/Linux package is live.
 
-### Planned release outputs
+### Candidate release outputs
 
 - A universal macOS `keebweaver-overlay-macos-universal.zip` containing
   `KeebWeaver Overlay.app`. The release workflow must Developer ID-sign,
@@ -30,7 +30,7 @@ Pages links to GitHub Releases for the app ZIP rather than publishing another
 binary copy. A local ad-hoc-signed build is for development and is not the
 production artifact.
 
-### Other unreleased behavior
+### Other v0.3.0 behavior
 
 - The macOS Beginner profile's Numbers layer maps the left home-row A/S/D/F/G
   positions to Bluetooth Host 1–5. It does not expose a destructive bond-clear

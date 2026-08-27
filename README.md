@@ -51,7 +51,7 @@ it reads layer state and can write only a bounded pointer-speed value over an
 encrypted BLE link. The firmware persists that value after a short debounce,
 so changing it does not require reflashing.
 
-Homebrew will be the recommended macOS installation after the next release has
+Homebrew will be the recommended macOS installation after `v0.3.0` has
 published the Developer ID-signed and notarized app, the release asset has been
 independently verified, and the Cask has passed a live tap installation:
 
@@ -137,10 +137,10 @@ gh attestation verify keebweaver-ergokeeb-corne-left.uf2 \
 gh release verify v0.2.0 --repo Cyberlane/keebweaver
 ```
 
-The published `v0.2.0` firmware release and the unreleased Overlay distribution
-work are separated in the [release notes](docs/RELEASE_NOTES.md). The current
-release has exact firmware and provenance assets only; it does not contain a
-desktop app or establish Windows/Linux runtime support.
+The published `v0.2.0` firmware release and the `v0.3.0` Overlay release
+candidate are separated in the [release notes](docs/RELEASE_NOTES.md). The
+current published release has exact firmware and provenance assets only; it
+does not contain a desktop app or establish Windows/Linux runtime support.
 
 ## Display artwork
 

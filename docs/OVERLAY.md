@@ -9,7 +9,7 @@ request Accessibility, Input Monitoring, or global keyboard-hook permission.
 
 | Platform | Implementation | Distribution status |
 | --- | --- | --- |
-| macOS 13+ | Native SwiftUI/AppKit app with CoreBluetooth | Available from source now. The signed/notarized ZIP and Homebrew Cask are gated on the next verified release. |
+| macOS 13+ | Native SwiftUI/AppKit app with CoreBluetooth | Available from source now. The signed/notarized ZIP and Homebrew Cask are gated on the verified `v0.3.0` release. |
 | Windows | C#/Avalonia shared UI with a WinRT GATT adapter | Source preview; compile verification is not physical BLE or desktop-runtime qualification. No release asset yet. |
 | Linux | C#/Avalonia shared UI with a BlueZ D-Bus adapter | Source preview for X11/XWayland; physical BLE and desktop-runtime qualification are pending. No release asset yet. |
 
@@ -22,9 +22,9 @@ is outside the first supported release.
 
 ## Install on macOS
 
-### Recommended after the next release: Homebrew
+### Recommended after the verified v0.3.0 release: Homebrew
 
-Once the release page lists `keebweaver-overlay-macos-universal.zip` as signed
+Once the `v0.3.0` release page lists `keebweaver-overlay-macos-universal.zip` as signed
 and notarized **and** a clean live tap installation has been recorded, install
 the exact same release artifact with:
 

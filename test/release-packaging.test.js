@@ -37,9 +37,9 @@ test("release metadata covers the exact declared asset set and detects tampering
 
     const environment = {
       ...process.env,
-      GITHUB_REF_NAME: "v0.2.0",
+      GITHUB_REF_NAME: "v0.3.0",
       GITHUB_SHA: "a".repeat(40),
-      RELEASE_TAG: "v0.2.0",
+      RELEASE_TAG: "v0.3.0",
       SOURCE_DATE_EPOCH: "1786723200",
     };
     execFileSync("node", ["overlay/packaging/create-release-metadata.mjs", directory], { cwd: root, env: environment });
@@ -65,11 +65,11 @@ test("Homebrew Cask rendering binds a stable version and exact archive checksum"
   try {
     const output = join(directory, "keebweaver-overlay.rb");
     const checksum = "b".repeat(64);
-    execFileSync("node", ["overlay/packaging/homebrew/render-cask.mjs", "0.2.0", checksum, output], { cwd: root });
+    execFileSync("node", ["overlay/packaging/homebrew/render-cask.mjs", "0.3.0", checksum, output], { cwd: root });
     const cask = readFileSync(output, "utf8");
 
     assert.match(cask, /cask "keebweaver-overlay"/);
-    assert.match(cask, /version "0\.2\.0"/);
+    assert.match(cask, /version "0\.3\.0"/);
     assert.ok(cask.includes(`sha256 "${checksum}"`));
     assert.match(cask, /keebweaver-overlay-macos-universal\.zip/);
     assert.match(cask, /depends_on macos: ">= :ventura"/);
@@ -91,7 +91,7 @@ test("macOS release metadata binds the exact universal archive and signed source
       schemaVersion: 1,
       target: "overlay.macos",
       asset: "keebweaver-overlay-macos-universal.zip",
-      version: "0.2.0",
+      version: "0.3.0",
       bundleIdentifier: "com.keebweaver.overlay",
       minimumSystemVersion: "13.0",
       architectures: ["arm64", "x86_64"],
@@ -99,7 +99,7 @@ test("macOS release metadata binds the exact universal archive and signed source
       archiveSize: statSync(archivePath).size,
       signing: { type: "Developer ID Application", hardenedRuntime: true, secureTimestamp: true },
       notarization: { accepted: true, stapled: true },
-      source: { repository: "Cyberlane/keebweaver", commit: "a".repeat(40), tag: "v0.2.0" },
+      source: { repository: "Cyberlane/keebweaver", commit: "a".repeat(40), tag: "v0.3.0" },
     }, null, 2)}\n`);
 
     const environment = { ...process.env, GITHUB_SHA: "a".repeat(40) };
