@@ -31,6 +31,12 @@ test("firmware maps a right-hand numpad and common symbols", () => {
   assert.match(keymap, /&kp MINUS\s+&kp EQUAL\s+&kp LESS_THAN\s+&kp GREATER_THAN\s+&kp BSLH\s+&kp GRAVE/);
 });
 
+test("firmware exposes five non-destructive Bluetooth host selectors", () => {
+  assert.match(keymap, /&bt BT_SEL 0\s+&bt BT_SEL 1\s+&bt BT_SEL 2\s+&bt BT_SEL 3\s+&bt BT_SEL 4/);
+  assert.equal(keymap.split(/&bt BT_SEL [0-4]/).length - 1, 5);
+  assert.doesNotMatch(keymap, /&bt BT_CLR(?:_ALL)?/);
+});
+
 test("firmware preserves the pointer cluster and adds Symbols speed controls", () => {
   for (const binding of ["&mmv MOVE_LEFT", "&mkp LCLK", "&mmv MOVE_RIGHT"]) {
     assert.equal(keymap.split(binding).length - 1, 4, `${binding} must occur once per layer`);

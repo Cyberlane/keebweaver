@@ -60,6 +60,7 @@ const beginnerNavigation = proposalBindings({
 });
 
 const beginnerNumbers = proposalBindings({
+  r1c1: "Host 1", r1c2: "Host 2", r1c3: "Host 3", r1c4: "Host 4", r1c5: "Host 5",
   r0c11: "7", r0c12: "8", r0c13: "9", r0c14: "/", r0c15: "Backspace", r0c16: "Delete",
   r1c11: "4", r1c12: "5", r1c13: "6", r1c14: "*", r1c15: "Home", r1c16: "Page up",
   r2c11: "1", r2c12: "2", r2c13: "3", r2c14: "-", r2c15: "End", r2c16: "Page down",

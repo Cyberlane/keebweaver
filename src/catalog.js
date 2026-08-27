@@ -15,7 +15,7 @@ export const PROFILE_CATALOG = Object.freeze([
   Object.freeze({
     id: "macos-beginner-v1",
     name: "macOS Beginner",
-    description: "Familiar QWERTY with dedicated Navigation, Numbers, and Symbols thumb layers.",
+    description: "Familiar QWERTY with dedicated Navigation, Numbers, and Symbols thumb layers plus five Bluetooth host selectors.",
     deviceId: DEVICE_DEFINITION.id,
     intent: PROJECT_INTENT,
   }),

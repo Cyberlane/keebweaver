@@ -25,6 +25,10 @@ test("beginner proposal has four explicit layers linked to captured references",
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Base").bindings.r3c11, "Enter / Navigation (hold)");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Base").bindings.r3c12, "Reserved");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Numbers").bindings.r0c11, "7");
+  assert.deepEqual(
+    ["r1c1", "r1c2", "r1c3", "r1c4", "r1c5"].map((id) => PROJECT_INTENT.layers.find((layer) => layer.id === "Numbers").bindings[id]),
+    ["Host 1", "Host 2", "Host 3", "Host 4", "Host 5"],
+  );
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Navigation").bindings.r1c1, "←");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Symbols").bindings.r2c13, "<");
   assert.equal(PROJECT_INTENT.layers.find((layer) => layer.id === "Symbols").bindings.r2c14, ">");

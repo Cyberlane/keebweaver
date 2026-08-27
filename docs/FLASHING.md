@@ -25,6 +25,14 @@ release notes do not require a settings reset:
    `keebweaver-ergokeeb-corne-right.uf2`.
 4. Reconnect normally and verify USB typing, the wireless split, both displays,
    all four layers, pointer movement/click, and existing Bluetooth operation.
+   On the Numbers layer, the left home-row A/S/D/F/G positions select Host 1–5.
+   A normal firmware update preserves existing bonds; selecting an empty host
+   starts advertising for a new pairing. No bond-clear action is bound.
+   If this keyboard previously saved edits through ZMK Studio, those runtime
+   bindings override the newly flashed stock keymap. Use Studio's **Restore
+   Stock Settings** action after the normal flash to discard only the saved
+   Studio keymap and reveal these compiled bindings; do not use the destructive
+   settings-reset UF2 for this.
    The persisted pointer-speed setting is stored in ZMK settings and survives
    normal power cycles; a settings-reset image clears it along with other
    runtime settings.
