@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: overlay-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   overlay-ci:
     name: overlay-ci
