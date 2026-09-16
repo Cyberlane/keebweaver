@@ -1,6 +1,7 @@
 name: Overlay
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -12,7 +13,8 @@ permissions:
 jobs:
   overlay-ci:
     name: overlay-ci
-    runs-on: macos-15
+    # Keep pull-request code on disposable GitHub-hosted machines.
+    runs-on: ${{ github.event_name == 'pull_request' && 'macos-15' || fromJSON('["self-hosted","macOS","ARM64","macbook-apple"]') }}
     timeout-minutes: 20
     steps:
       - name: Check out source

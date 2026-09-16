@@ -1,0 +1,31 @@
+name: MacBook runner check
+
+on:
+  workflow_dispatch:
+    inputs:
+      hold_seconds:
+        description: Hold a build slot to check the shared queue
+        type: choice
+        options: ['0', '60', '120']
+        default: '0'
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: [self-hosted, macOS, ARM64, macbook-apple]
+    timeout-minutes: 10
+    steps:
+      - name: Verify native build tools and hold the reserved slot
+        env:
+          HOLD_SECONDS: ${{ inputs.hold_seconds }}
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          swift --version
+          case "$HOLD_SECONDS" in 0|60|120) ;; *) exit 1 ;; esac
+          printf 'print("MacBook native compiler OK")\n' > "$RUNNER_TEMP/pool-check.swift"
+          swiftc "$RUNNER_TEMP/pool-check.swift" -o "$RUNNER_TEMP/pool-check"
+          "$RUNNER_TEMP/pool-check"
+          sleep "$HOLD_SECONDS"
